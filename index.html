@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System Security</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent-red: #ff3b30;
+            --accent-red-glow: rgba(255, 59, 48, 0.3);
+            --success: #34c759;
+            --success-glow: rgba(52, 199, 89, 0.3);
+            --text-main: #ffffff;
+            --text-sub: #86868b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Inter', -apple-system, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--text-main);
+            /* Premium Animated Background */
+            background: radial-gradient(circle at 50% 10%, #1a1a1a 0%, #000000 70%);
+        }
+
+        /* Subtle animated noise overlay */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJnoiPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzTMiMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNnKSIgb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==');
+            opacity: 0.4; pointer-events: none; z-index: 1;
+        }
+
+        .security-card {
+            width: 90%; max-width: 400px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            position: relative; z-index: 10;
+            opacity: 0; transform: scale(0.95);
+            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes cardEntrance { to { opacity: 1; transform: scale(1); } }
+
+        /* BRANDING */
+        .brand-logo {
+            width: 80px; height: 80px;
+            border-radius: 20px; /* Squircle shape like iOS icons */
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin: 0 auto 25px auto;
+            display: block;
+            animation: floatLogo 6s ease-in-out infinite;
+        }
+        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255, 59, 48, 0.15); border: 1px solid rgba(255, 59, 48, 0.2);
+            color: #ff453a; padding: 6px 14px; border-radius: 100px;
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        .status-dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; animation: pulseRed 2s infinite; }
+
+        h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.5px; }
+        p { font-size: 0.95rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 30px; }
+
+        /* TECH TABLE */
+        .tech-details {
+            background: rgba(0,0,0,0.3); border-radius: 16px; padding: 16px; margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+        .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85rem; }
+        .row:last-child { margin-bottom: 0; }
+        .label { color: #6e6e73; font-weight: 500; }
+        .value { color: #f5f5f7; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px; }
+
+        /* MAIN BUTTON */
+        .action-btn {
+            width: 100%; padding: 18px;
+            background: white; color: black;
+            border: none; border-radius: 16px;
+            font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: transform 0.2s, opacity 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .action-btn:active { transform: scale(0.96); }
+        .action-btn::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: translateX(-100%); transition: 0.5s;
+        }
+        .action-btn:hover::after { transform: translateX(100%); }
+
+        .support-link { display: block; margin-top: 25px; font-size: 0.8rem; color: var(--text-sub); text-decoration: none; opacity: 0.7; }
+
+        /* LOADING STATE */
+        .processing-state, .success-state { display: none; flex-direction: column; align-items: center; }
+        
+        /* Modern Loader */
+        .loader-ring {
+            width: 48px; height: 48px; border-radius: 50%;
+            border: 3px solid transparent; border-top-color: white; border-right-color: white;
+            animation: spin 0.8s linear infinite; margin-bottom: 20px;
+        }
+        
+        .process-text { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #86868b; }
+
+        /* SUCCESS STATE */
+        .success-icon {
+            width: 80px; height: 80px;
+            background: var(--success-glow); color: var(--success);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; animation: popSuccess 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .success-btn {
+            background: #34c759; color: white; width: 100%; padding: 18px; border-radius: 16px; border:none;
+            font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(52, 199, 89, 0.3);
+        }
+
+        /* FOOTER */
+        .footer-credit {
+            position: absolute; bottom: 25px; width: 100%; text-align: center;
+            color: rgba(255,255,255,0.2); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px;
+            z-index: 5; pointer-events: none;
+        }
+        .footer-credit span { color: rgba(255,255,255,0.4); font-weight: 700; }
+
+        @keyframes pulseRed { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes popSuccess { from { transform: scale(0); } to { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <div class="security-card" id="main-card">
+        
+        <!-- 1. LOCKED STATE -->
+        <div id="locked-content">
+            <img src="https://i.ibb.co/LDv3mF6w/4e83a86ecf00dacbadf4e953791ce41f.jpg" alt="CMB.World" class="brand-logo">
+            
+            <div class="status-pill"><span class="status-dot"></span>Access Suspended</div>
+
+            <h1>Verification Required</h1>
+            <p>Unusual activity detected. This session has been locked by the administrator pending identity confirmation.</p>
+            
+            <div class="tech-details">
+                <div class="row">
+                    <span class="label">Owner</span>
+                    <span class="value" style="color:white; font-weight:600;">CMB.World</span>
+                </div>
+                <div class="row">
+                    <span class="label">Session ID</span>
+                    <span class="value" id="device-id">...</span>
+                </div>
+                <div class="row">
+                    <span class="label">Encryption</span>
+                    <span class="value" style="color:#ff453a;">AES-256 LOCKED</span>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="startUnlock()">Verify & Unlock</button>
+            <a href="#" class="support-link">Contact Support ID: #9921</a>
+        </div>
+
+        <!-- 2. SCANNING STATE -->
+        <div id="processing-content" class="processing-state">
+            <div class="loader-ring"></div>
+            <h2 style="font-size: 1.2rem; margin-bottom: 8px;">Authenticating</h2>
+            <p class="process-text" id="scan-text">Connecting...</p>
+        </div>
+
+        <!-- 3. SUCCESS STATE -->
+        <div id="success-content" class="success-state">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            
+            <h2 style="color: #34c759; margin-bottom: 5px;">Access Granted</h2>
+            <p>Identity verified. The application is now unlocked and safe to use.</p>
+
+            <button class="success-btn" onclick="finishProcess()">Return to App</button>
+        </div>
+
+    </div>
+
+    <div class="footer-credit">Modified by <span>CMB.World</span></div>
+
+    <script>
+        // Generate a random high-tech looking ID
+        document.getElementById('device-id').innerText = 'SES-' + Math.floor(Math.random() * 100000);
+
+        function startUnlock() {
+            // Haptic Feedback (Android)
+            if (navigator.vibrate) navigator.vibrate(50);
+
+            const locked = document.getElementById('locked-content');
+            const processing = document.getElementById('processing-content');
+            const success = document.getElementById('success-content');
+            const scanText = document.getElementById('scan-text');
+            const card = document.getElementById('main-card');
+
+            locked.style.display = 'none';
+            processing.style.display = 'flex';
+
+            // Sequence of fake statuses
+            const stages = [
+                { text: "Establishing Secure Link...", delay: 800 },
+                { text: "Verifying Device Signature...", delay: 1800 },
+                { text: "Decrypting Session Key...", delay: 2800 },
+                { text: "Access Approved.", delay: 3500 }
+            ];
+
+            let cumulativeTime = 0;
+
+            stages.forEach(stage => {
+                setTimeout(() => {
+                    scanText.innerText = stage.text;
+                }, stage.delay - 800);
+            });
+
+            setTimeout(() => {
+                if (navigator.vibrate) navigator.vibrate([50, 100, 50]); // Success vibration
+                
+                processing.style.display = 'none';
+                success.style.display = 'flex';
+                
+                // Change card glow to green
+                card.style.boxShadow = "0 40px 80px -20px rgba(52, 199, 89, 0.2), inset 0 0 0 1px rgba(52, 199, 89, 0.3)";
+                card.style.borderColor = "rgba(52, 199, 89, 0.3)";
+
+            }, 3500);
+        }
+
+        function finishProcess() {
+            // Fade out
+            document.body.style.transition = "opacity 0.8s ease";
+            document.body.style.opacity = "0";
+            setTimeout(() => { console.log("Done"); }, 1000);
+        }
+    </script>
+</body>
+</html>
