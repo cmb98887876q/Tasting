@@ -16,6 +16,8 @@
             --primary: #6366f1;
             --primary-hover: #4f46e5;
             --accent: #ef4444;
+            --download-color: #10b981;
+            --download-hover: #059669;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
@@ -168,7 +170,7 @@
             flex-wrap: wrap;
         }
 
-        button {
+        button, .btn-link-action {
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             font-weight: 500;
@@ -179,6 +181,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
             transition: var(--transition);
         }
 
@@ -194,6 +197,19 @@
             background-color: var(--primary-hover);
             transform: translateY(-1px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-download {
+            background-color: var(--download-color);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            justify-content: center;
+        }
+
+        .btn-download:hover {
+            background-color: var(--download-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
         .btn-secondary {
@@ -253,7 +269,7 @@
         /* Player Option Controls */
         .player-controls {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 10px;
         }
 
@@ -267,6 +283,10 @@
             font-weight: 500;
             text-decoration: none;
             text-align: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
         }
 
         .btn-control:hover {
@@ -277,6 +297,14 @@
 
         .btn-control i {
             color: var(--primary);
+        }
+
+        .btn-control.download-control i {
+            color: var(--download-color);
+        }
+
+        .btn-control.download-control:hover {
+            border-color: var(--download-color);
         }
 
         /* Toast Notifications */
@@ -337,7 +365,7 @@
             header h1 { font-size: 1.8rem; }
             .card { padding: 16px; }
             .actions-row { flex-direction: column; }
-            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+            .btn-primary, .btn-secondary, .btn-download { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -349,7 +377,7 @@
     <div class="container">
         <header>
             <h1>External Video Player</h1>
-            <p>Seamlessly embed and open YouTube videos across web and external players.</p>
+            <p>Seamlessly embed, open, and download YouTube videos across web and mobile.</p>
         </header>
 
         <!-- Input Card -->
@@ -367,13 +395,16 @@
 
                 <div class="actions-row">
                     <button class="btn-secondary" id="pasteBtn" title="Paste from clipboard">
-                        <i class="fa-solid fa-paste"></i> Paste URL
+                        <i class="fa-solid fa-paste"></i> Paste
                     </button>
                     <button class="btn-secondary" id="copyBtn" title="Copy video URL">
-                        <i class="fa-solid fa-copy"></i> Copy URL
+                        <i class="fa-solid fa-copy"></i> Copy
+                    </button>
+                    <button class="btn-download" id="downloadMainBtn" title="Download video link">
+                        <i class="fa-solid fa-download"></i> Download
                     </button>
                     <button class="btn-primary" id="playBtn">
-                        <i class="fa-solid fa-play"></i> Play Video
+                        <i class="fa-solid fa-play"></i> Play
                     </button>
                 </div>
             </div>
@@ -385,16 +416,19 @@
                 <iframe id="youtubeIframe" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
 
-            <!-- Alternative Playback Options -->
+            <!-- Alternative Playback & Download Controls -->
             <div class="player-controls">
+                <a href="#" id="downloadAppBtn" class="btn-control download-control" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-download"></i> Download Video
+                </a>
                 <a href="#" id="externalAppBtn" class="btn-control" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-mobile-screen-button"></i> Open in App / Mobile
+                    <i class="fa-solid fa-mobile-screen-button"></i> Open in App
                 </a>
                 <a href="#" id="pipBtn" class="btn-control" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Original Link
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Original Link
                 </a>
                 <button class="btn-control" id="clearBtn" style="border: none; cursor: pointer;">
-                    <i class="fa-solid fa-rotate-right"></i> Reset Player
+                    <i class="fa-solid fa-rotate-right"></i> Reset
                 </button>
             </div>
         </div>
@@ -409,12 +443,14 @@
         const pasteBtn = document.getElementById('pasteBtn');
         const copyBtn = document.getElementById('copyBtn');
         const playBtn = document.getElementById('playBtn');
+        const downloadMainBtn = document.getElementById('downloadMainBtn');
         const clearBtn = document.getElementById('clearBtn');
         const errorMessage = document.getElementById('errorMessage');
         const errorText = document.getElementById('errorText');
         const playerSection = document.getElementById('playerSection');
         const youtubeIframe = document.getElementById('youtubeIframe');
         const externalAppBtn = document.getElementById('externalAppBtn');
+        const downloadAppBtn = document.getElementById('downloadAppBtn');
         const pipBtn = document.getElementById('pipBtn');
         const toastContainer = document.getElementById('toast-container');
 
@@ -434,9 +470,8 @@
         // Robust YouTube URL Parser & Validator
         function extractVideoId(url) {
             if (!url) return null;
-            cleanedUrl = url.trim();
+            const cleanedUrl = url.trim();
             
-            // Regex patterns for standard watch, short links, embed, and shorts
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = cleanedUrl.match(regExp);
 
@@ -501,12 +536,26 @@
             });
         });
 
+        // Download Button Handlers
+        function handleDownload() {
+            const videoId = validateAndGetId();
+            if (!videoId) return;
+
+            // Secure external redirection URL handler compatible with standard download resolvers/services
+            const fullUrl = `https://www.youtube.com/watch?v=${videoId}`;
+            const downloadServiceUrl = `https://ssyoutube.com/watch?v=${videoId}`; // Or similar auxiliary safe utility
+            
+            window.open(downloadServiceUrl, '_blank', 'noopener,noreferrer');
+            showToast("Redirecting to video download service...");
+        }
+
+        downloadMainBtn.addEventListener('click', handleDownload);
+
         // Play Video Button Handler
         playBtn.addEventListener('click', () => {
             const videoId = validateAndGetId();
             if (!videoId) return;
 
-            // Show loading state on button
             const originalHTML = playBtn.innerHTML;
             playBtn.innerHTML = `<div class="spinner"></div> Loading...`;
             playBtn.disabled = true;
@@ -515,17 +564,16 @@
                 // Set Embedded Player Source
                 youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
                 
-                // Configure External/Mobile Options
-                // Intent links or deep links for mobile apps / fallback web
+                // Configure Actions and Links
                 externalAppBtn.href = `vnd.youtube://${videoId}`;
+                downloadAppBtn.href = `https://ssyoutube.com/watch?v=${videoId}`;
                 pipBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
 
-                // Display player section with smooth layout transition
+                // Display player section
                 playerSection.style.display = 'flex';
                 playBtn.innerHTML = originalHTML;
                 playBtn.disabled = false;
 
-                // Smooth scroll to player on smaller screens
                 playerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 showToast("Video loaded successfully!");
             }, 350);
