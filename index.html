@@ -2,858 +2,557 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Photo Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>External Video Player</title>
+    <!-- Google Fonts & FontAwesome for Modern Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- PWA Manifest Encoded Directly into the HTML (No external file needed) -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Pro%20Photo%20Viewer%22%2C%22short_name%22%3A%22ProPhoto%22%2C%22description%22%3A%22Premium%20High-quality%20offline%20photo%20viewing.%20Secured%20with%20PIN.%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2305050A%22%2C%22theme_color%22%3A%22%236366f1%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe0%2FPlaceholder_icon_-_camera.svg%2F192px-Placeholder_icon_-_camera.svg.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe0%2FPlaceholder_icon_-_camera.svg%2F512px-Placeholder_icon_-_camera.svg.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
-    <meta name="theme-color" content="#05050A">
-    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Placeholder_icon_-_camera.svg/192px-Placeholder_icon_-_camera.svg.png">
-
-    <!-- Premium Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-
-    <!-- jsPDF Library for PDF Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- Tailwind CSS (with preflight disabled so it doesn't break your custom CSS) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            corePlugins: {
-                preflight: false,
-            }
-        }
-    </script>
-
     <style>
-        /* 🎨 Premium Color System & Variables */
         :root {
-            --bg-base: #05050A;
-            --surface-glass: rgba(15, 15, 20, 0.65);
-            --surface-overlay: rgba(20, 20, 25, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(255, 255, 255, 0.15);
-            
+            --bg-color: #0f111a;
+            --surface-color: rgba(26, 31, 44, 0.7);
+            --surface-solid: #1a1f2c;
             --primary: #6366f1;
             --primary-hover: #4f46e5;
-            --success: #10b981;
-            --success-hover: #059669;
-            --danger: #f43f5e;
-            --danger-hover: #e11d48;
-            
-            --text-main: #ffffff;
+            --accent: #ef4444;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            
-            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.5);
-            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
-            --radius-lg: 24px;
-            --radius-md: 16px;
-            --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glow-color: rgba(99, 102, 241, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Animated Glows */
+        .bg-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            filter: blur(140px);
+            border-radius: 50%;
+            z-index: -1;
+            top: -50px;
+            left: 10%;
+            opacity: 0.3;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: #ec4899;
+            filter: blur(160px);
+            border-radius: 50%;
+            z-index: -1;
+            bottom: -50px;
+            right: 10%;
+            opacity: 0.2;
+            animation: pulseGlow 10s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.2; }
+            100% { transform: scale(1.2); opacity: 0.35; }
+        }
+
+        /* Container & Glassmorphism */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            z-index: 1;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: var(--surface-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+        }
+
+        /* Input Group */
+        .input-group-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-container i.fa-link {
+            position: absolute;
+            left: 16px;
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: rgba(15, 17, 26, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px 14px 48px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--glow-color);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Action Buttons Row */
+        .actions-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            padding: 10px 16px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Error Feedback */
+        .error-message {
+            display: none;
+            color: var(--accent);
+            font-size: 0.85rem;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Player Section */
+        .player-section {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+            border-radius: 12px;
             overflow: hidden;
-            
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #05050A, #141028);
-            background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
-        /* 🔐 PIN SCREEN UI */
-        #pin-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.85);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 1000; transition: opacity 0.5s ease, visibility 0.5s;
+        /* Player Option Controls */
+        .player-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
         }
 
-        .pin-container { text-align: center; max-width: 350px; width: 100%; }
-        .pin-icon { color: var(--primary); margin-bottom: 15px; }
-        
-        #pin-title { font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin-bottom: 5px; }
-        #pin-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
-
-        .pin-dots { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
-        .pin-dot {
-            width: 16px; height: 16px; border-radius: 50%;
-            border: 2px solid var(--border-glow); transition: var(--transition);
-        }
-        .pin-dot.active {
-            background: var(--primary); border-color: var(--primary);
-            box-shadow: var(--shadow-glow); transform: scale(1.2);
+        .btn-control {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 10px;
+            justify-content: center;
+            font-weight: 500;
+            text-decoration: none;
+            text-align: center;
         }
 
-        .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center; }
-        .pin-btn {
-            width: 75px; height: 75px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass);
-            color: white; font-size: 1.8rem; font-family: 'Inter', sans-serif; font-weight: 500;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        .btn-control:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+            color: var(--text-main);
         }
-        .pin-btn:active { background: rgba(255, 255, 255, 0.15); transform: scale(0.9); }
-        .pin-btn.action { font-size: 1.2rem; background: transparent; border: none; box-shadow: none; }
 
-        /* Error Shake Animation */
-        .shake { animation: shakeError 0.4s ease-in-out; }
-        @keyframes shakeError {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
+        .btn-control i {
+            color: var(--primary);
         }
-        .error-text { color: var(--danger) !important; }
 
-        /* 📱 Main App Window */
-        .app-container {
-            width: 100%; max-width: 1050px; background: var(--surface-glass);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass); border-radius: var(--radius-lg); 
-            box-shadow: var(--shadow-soft); overflow: hidden; 
-            display: flex; flex-direction: column;
-            opacity: 0; pointer-events: none; transform: scale(0.95);
-            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
         }
-        .app-container.unlocked { opacity: 1; pointer-events: all; transform: scale(1); }
 
-        /* 📤 Upload Screen */
-        #upload-container {
-            padding: 80px 40px; text-align: center; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; min-height: 600px;
+        .toast {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1), fadeOut 0.3s ease 2.7s forwards;
         }
-        .upload-dropzone {
-            border: 2px dashed var(--border-glow); border-radius: var(--radius-lg);
-            padding: 60px 40px; width: 100%; max-width: 500px; background: rgba(0,0,0,0.2); transition: var(--transition);
-        }
-        .upload-dropzone:hover {
-            border-color: var(--primary); background: rgba(99, 102, 241, 0.05); transform: scale(1.02); box-shadow: var(--shadow-glow);
-        }
-        .upload-icon { color: var(--primary); margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        #upload-container h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; margin-bottom: 12px; }
-        #upload-container p { color: var(--text-muted); margin-bottom: 30px; font-size: 1.05rem; }
-        
-        .upload-button {
-            display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--primary); color: white;
-            border: none; border-radius: 12px; font-size: 1.1rem; font-family: 'Outfit', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition);
-        }
-        .upload-button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
-        #file-input { display: none; }
-        
-        /* 🖼️ Viewer Layout */
-        #viewer-container { display: none; flex-direction: column; height: 85vh; max-height: 850px; }
-        
-        .viewer-header {
-            display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border-glass); background: rgba(0,0,0,0.3); z-index: 10;
-        }
-        .viewer-title { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 600; }
-        .header-buttons { display: flex; align-items: center; gap: 10px; }
-        
-        .action-button {
-            display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; border: none; border-radius: 10px; font-size: 0.9rem; font-family: 'Inter', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition);
-        }
-        .add-button { background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-glass); }
-        .add-button:hover { background: rgba(255,255,255,0.15); }
-        
-        .download-button { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .download-button:hover { background: var(--success); color: white; }
-        
-        .clear-button { background: rgba(244, 63, 94, 0.15); color: var(--danger); border: 1px solid rgba(244, 63, 94, 0.3); }
-        .clear-button:hover { background: var(--danger); color: white; }
 
-        /* Loader Spinner for Download */
+        .toast.success i { color: #10b981; }
+        .toast.error i { color: var(--accent); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(10px); }
+        }
+
+        /* Loading Spinner */
         .spinner {
-            width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* 🚀 OPTIMIZED SWIPE TRACK */
-        .main-image-wrapper {
-            flex-grow: 1; background-color: #000; position: relative; overflow: hidden; cursor: grab; touch-action: none;
-        }
-        .main-image-wrapper:active { cursor: grabbing; }
-        
-        .swipe-track {
-            display: flex; width: 300%; height: 100%; transform: translate3d(-33.333%, 0, 0); will-change: transform;
-        }
-        
-        .slide { width: 33.333%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .slide img { max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; user-select: none; }
-
-        .page-counter {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-family: 'Outfit', sans-serif; font-weight: 600; z-index: 5;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
         }
 
-        /* DETAILS OVERLAY */
-        .details-overlay {
-            position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px;
-            background: var(--surface-overlay); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glow); padding: 20px 24px; border-radius: 20px; color: white; z-index: 20; box-shadow: var(--shadow-soft); transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        #details-display-view { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-        .text-content { flex-grow: 1; }
-        
-        #display-date { font-size: 0.85em; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        #display-description { font-family: 'Outfit', sans-serif; font-size: 1.3em; font-weight: 500; line-height: 1.4; }
-        
-        #edit-button {
-            background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid var(--border-glass); width: 48px; height: 48px; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: var(--transition);
-        }
-        #edit-button:hover { background: var(--primary); border-color: var(--primary); transform: rotate(10deg); }
-
-        #details-edit-view { display: none; flex-direction: column; gap: 16px; }
-        .input-group { display: flex; flex-direction: column; }
-        .input-group label { font-size: 0.85em; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; }
-        
-        .details-input {
-            width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; font-size: 1em; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s;
-        }
-        .details-input:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
-        
-        .edit-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
-        .edit-actions .action-button.primary { background: var(--primary); border: none; }
-        .edit-actions .action-button.primary:hover { background: var(--primary-hover); }
-
-        /* Dock-Style Thumbnails */
-        .thumbnail-bar { flex-shrink: 0; background: rgba(0,0,0,0.6); padding: 16px 20px; border-top: 1px solid var(--border-glass); }
-        .thumbnail-container { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 4px; scroll-behavior: smooth; }
-        .thumbnail-container::-webkit-scrollbar { height: 0px; } 
-        
-        .thumbnail-img {
-            width: 65px; height: 65px; object-fit: cover; border-radius: 12px; cursor: pointer; border: 2px solid transparent; opacity: 0.4; transition: var(--transition); flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .thumbnail-img:hover { opacity: 0.8; transform: translateY(-4px); }
-        .thumbnail-img.active { border-color: var(--primary); opacity: 1; transform: scale(1.15) translateY(-2px); box-shadow: var(--shadow-glow); }
-        
-        /* Mobile adjustments for header buttons */
+        /* Responsive Adjustments */
         @media (max-width: 600px) {
-            .action-button span { display: none; } /* Hide text on small screens */
-            .action-button { padding: 10px; }
-            .header-buttons { gap: 8px; }
+            body { padding: 12px; }
+            header h1 { font-size: 1.8rem; }
+            .card { padding: 16px; }
+            .actions-row { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 🚀 Beautiful Tailwind PWA Install Button -->
-    <!-- Positioned absolutely above the entire app with a high Z-Index so it stands out -->
-    <button id="install-apk-btn" class="hidden fixed top-8 right-8 z-[9999] flex items-center justify-center gap-3 px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow-[0_10px_40px_-10px_rgba(99,102,241,0.8)] hover:scale-105 hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] transition-all duration-300 font-[Outfit] font-semibold tracking-wide border border-white/20 backdrop-blur-md cursor-pointer outline-none">
-        <svg class="text-white drop-shadow-md" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-            <path d="M12 18h.01"></path>
-            <path d="M12 14v-4"></path>
-            <path d="M10 12l2 2 2-2"></path>
-        </svg>
-        <span class="text-[1.05rem] drop-shadow-sm">Install APK</span>
-    </button>
+    <div class="bg-glow"></div>
+    <div class="bg-glow-2"></div>
 
-    <!-- 🔐 PIN LOCK SCREEN -->
-    <div id="pin-screen">
-        <div class="pin-container" id="pin-container">
-            <svg class="pin-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <h2 id="pin-title">Set a 4-Digit PIN</h2>
-            <p id="pin-subtitle">To keep your photos secure</p>
+    <div class="container">
+        <header>
+            <h1>External Video Player</h1>
+            <p>Seamlessly embed and open YouTube videos across web and external players.</p>
+        </header>
 
-            <div class="pin-dots">
-                <div class="pin-dot"></div><div class="pin-dot"></div>
-                <div class="pin-dot"></div><div class="pin-dot"></div>
+        <!-- Input Card -->
+        <div class="card">
+            <div class="input-group-wrapper">
+                <div class="input-container">
+                    <i class="fa-solid fa-link"></i>
+                    <input type="text" id="urlInput" placeholder="Paste YouTube URL here (e.g., https://youtu.be/...)" autocomplete="off" spellcheck="false">
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="errorText">Please enter a valid YouTube video link.</span>
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn-secondary" id="pasteBtn" title="Paste from clipboard">
+                        <i class="fa-solid fa-paste"></i> Paste URL
+                    </button>
+                    <button class="btn-secondary" id="copyBtn" title="Copy video URL">
+                        <i class="fa-solid fa-copy"></i> Copy URL
+                    </button>
+                    <button class="btn-primary" id="playBtn">
+                        <i class="fa-solid fa-play"></i> Play Video
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Card Section -->
+        <div class="card player-section" id="playerSection">
+            <div class="video-wrapper">
+                <iframe id="youtubeIframe" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
 
-            <div class="pin-pad">
-                <button class="pin-btn" onclick="enterPin(1)">1</button>
-                <button class="pin-btn" onclick="enterPin(2)">2</button>
-                <button class="pin-btn" onclick="enterPin(3)">3</button>
-                <button class="pin-btn" onclick="enterPin(4)">4</button>
-                <button class="pin-btn" onclick="enterPin(5)">5</button>
-                <button class="pin-btn" onclick="enterPin(6)">6</button>
-                <button class="pin-btn" onclick="enterPin(7)">7</button>
-                <button class="pin-btn" onclick="enterPin(8)">8</button>
-                <button class="pin-btn" onclick="enterPin(9)">9</button>
-                <button class="pin-btn action"></button>
-                <button class="pin-btn" onclick="enterPin(0)">0</button>
-                <button class="pin-btn action" onclick="deletePin()">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
+            <!-- Alternative Playback Options -->
+            <div class="player-controls">
+                <a href="#" id="externalAppBtn" class="btn-control" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Open in App / Mobile
+                </a>
+                <a href="#" id="pipBtn" class="btn-control" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Original Link
+                </a>
+                <button class="btn-control" id="clearBtn" style="border: none; cursor: pointer;">
+                    <i class="fa-solid fa-rotate-right"></i> Reset Player
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 📱 MAIN APP -->
-    <div class="app-container" id="app-container">
-        <input type="file" id="file-input" accept="image/*" multiple>
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
 
-        <div id="upload-container">
-            <div class="upload-dropzone">
-                <svg class="upload-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
-                </svg>
-                <h2>Photo Library</h2>
-                <p>High-quality offline viewing. Secured with PIN.</p>
-                <label for="file-input" class="upload-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                    Select Photos
-                </label>
-            </div>
-        </div>
-
-        <div id="viewer-container">
-            <div class="viewer-header">
-                <div class="viewer-title">Gallery View</div>
-                <div class="header-buttons">
-                    <label for="file-input" class="action-button add-button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        <span>Add</span>
-                    </label>
-                    
-                    <button id="download-pdf-button" class="action-button download-button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        <span>PDF</span>
-                    </button>
-                    
-                    <button id="clear-gallery-button" class="action-button clear-button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        <span>Clear</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="main-image-wrapper" id="main-image-wrapper">
-                <div class="swipe-track" id="swipe-track">
-                    <div class="slide"><img id="img-prev" src="" alt=""></div>
-                    <div class="slide"><img id="img-curr" src="" alt=""></div>
-                    <div class="slide"><img id="img-next" src="" alt=""></div>
-                </div>
-
-                <div class="page-counter" id="page-counter"></div>
-                
-                <div class="details-overlay" id="details-overlay">
-                    <div id="details-display-view">
-                        <div class="text-content">
-                            <p id="display-date">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                <span id="date-text">2023-10-27</span>
-                            </p>
-                            <h3 id="display-description">Description goes here</h3>
-                        </div>
-                        <button id="edit-button" title="Edit Details">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        </button>
-                    </div>
-                    
-                    <div id="details-edit-view">
-                        <div class="input-group">
-                            <label for="edit-date-input">Capture Date</label>
-                            <input type="date" id="edit-date-input" class="details-input">
-                        </div>
-                        <div class="input-group">
-                            <label for="edit-desc-input">Photo Description</label>
-                            <input type="text" id="edit-desc-input" class="details-input" placeholder="What's happening in this photo?">
-                        </div>
-                        <div class="edit-actions">
-                            <button id="cancel-edit-button" class="action-button">Cancel</button>
-                            <button id="save-edit-button" class="action-button primary">Save Changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="thumbnail-bar">
-                <div class="thumbnail-container" id="thumbnail-container"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Application Logic -->
     <script>
-        // 🚀 --- PWA INSTALLATION LOGIC ---
-        let deferredPrompt;
-        const installApkBtn = document.getElementById('install-apk-btn');
+        // DOM Elements
+        const urlInput = document.getElementById('urlInput');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const playBtn = document.getElementById('playBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const playerSection = document.getElementById('playerSection');
+        const youtubeIframe = document.getElementById('youtubeIframe');
+        const externalAppBtn = document.getElementById('externalAppBtn');
+        const pipBtn = document.getElementById('pipBtn');
+        const toastContainer = document.getElementById('toast-container');
 
-        // Listen for the browser's install prompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = e;
-            // Reveal the beautiful Tailwind install button
-            installApkBtn.classList.remove('hidden');
-        });
+        // Helper function to show notifications (Toast)
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            toastContainer.appendChild(toast);
 
-        installApkBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                // Show the prompt natively
-                deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('User accepted the APK/A2HS prompt');
-                } else {
-                    console.log('User dismissed the APK/A2HS prompt');
-                }
-                deferredPrompt = null;
-                // Hide button after choice
-                installApkBtn.classList.add('hidden');
-            }
-        });
-
-        // Optional: Hide button immediately if already installed
-        window.addEventListener('appinstalled', () => {
-            installApkBtn.classList.add('hidden');
-            console.log('PWA was installed successfully');
-        });
-
-        // 🔐 --- PIN LOCK LOGIC ---
-        let currentPinInput = '';
-        let setupTempPin = '';
-        const savedAppPin = localStorage.getItem('proGalleryPin');
-        let pinMode = savedAppPin ? 'unlock' : 'setup1'; 
-
-        const pinTitle = document.getElementById('pin-title');
-        const pinSubtitle = document.getElementById('pin-subtitle');
-        const pinDots = document.querySelectorAll('.pin-dot');
-        const pinContainer = document.getElementById('pin-container');
-        const pinScreen = document.getElementById('pin-screen');
-        const appContainer = document.getElementById('app-container');
-
-        if(pinMode === 'unlock') {
-            pinTitle.textContent = "Enter PIN";
-            pinSubtitle.textContent = "Unlock your secure gallery";
-        }
-
-        function vibrate() {
-            if(window.navigator && window.navigator.vibrate) navigator.vibrate(40);
-        }
-
-        function updateDots() {
-            pinDots.forEach((dot, index) => {
-                if (index < currentPinInput.length) dot.classList.add('active');
-                else dot.classList.remove('active');
-            });
-        }
-
-        window.enterPin = function(num) {
-            vibrate();
-            if (currentPinInput.length < 4) {
-                currentPinInput += num;
-                updateDots();
-                if (currentPinInput.length === 4) {
-                    setTimeout(processPin, 200); 
-                }
-            }
-        }
-
-        window.deletePin = function() {
-            vibrate();
-            if (currentPinInput.length > 0) {
-                currentPinInput = currentPinInput.slice(0, -1);
-                updateDots();
-                pinTitle.classList.remove('error-text');
-            }
-        }
-
-        function triggerError(msg) {
-            pinContainer.classList.add('shake');
-            pinTitle.classList.add('error-text');
-            pinTitle.textContent = msg;
-            if(window.navigator && window.navigator.vibrate) navigator.vibrate([100, 50, 100]);
-            
             setTimeout(() => {
-                pinContainer.classList.remove('shake');
-                currentPinInput = '';
-                updateDots();
-            }, 500);
+                toast.remove();
+            }, 3000);
         }
 
-        function processPin() {
-            if (pinMode === 'unlock') {
-                if (currentPinInput === savedAppPin) {
-                    unlockApp();
-                } else {
-                    triggerError("Incorrect PIN");
-                    setTimeout(() => {
-                        pinTitle.textContent = "Enter PIN";
-                        pinTitle.classList.remove('error-text');
-                    }, 1000);
-                }
-            } 
-            else if (pinMode === 'setup1') {
-                setupTempPin = currentPinInput;
-                currentPinInput = '';
-                pinMode = 'setup2';
-                pinTitle.textContent = "Confirm PIN";
-                pinSubtitle.textContent = "Enter your PIN again";
-                updateDots();
-            } 
-            else if (pinMode === 'setup2') {
-                if (currentPinInput === setupTempPin) {
-                    localStorage.setItem('proGalleryPin', currentPinInput);
-                    unlockApp();
-                } else {
-                    triggerError("PINs do not match");
-                    pinMode = 'setup1';
-                    setupTempPin = '';
-                    setTimeout(() => {
-                        pinTitle.textContent = "Set a 4-Digit PIN";
-                        pinTitle.classList.remove('error-text');
-                        pinSubtitle.textContent = "To keep your photos secure";
-                    }, 1000);
-                }
-            }
-        }
-
-        function unlockApp() {
-            pinScreen.style.opacity = '0';
-            setTimeout(() => { pinScreen.style.visibility = 'hidden'; }, 500);
-            appContainer.classList.add('unlocked');
-            initDB();
-        }
-
-        // 📱 --- MAIN GALLERY LOGIC ---
-        const fileInput = document.getElementById('file-input');
-        const uploadContainer = document.getElementById('upload-container');
-        const viewerContainer = document.getElementById('viewer-container');
-        const mainImageWrapper = document.getElementById('main-image-wrapper');
-        const swipeTrack = document.getElementById('swipe-track');
-        
-        const imgPrev = document.getElementById('img-prev');
-        const imgCurr = document.getElementById('img-curr');
-        const imgNext = document.getElementById('img-next');
-
-        const thumbnailContainer = document.getElementById('thumbnail-container');
-        const pageCounter = document.getElementById('page-counter');
-        const clearGalleryButton = document.getElementById('clear-gallery-button');
-        const downloadPdfButton = document.getElementById('download-pdf-button');
-        const detailsOverlay = document.getElementById('details-overlay');
-        
-        const detailsDisplayView = document.getElementById('details-display-view');
-        const detailsEditView = document.getElementById('details-edit-view');
-        const displayDateText = document.getElementById('date-text');
-        const displayDescription = document.getElementById('display-description');
-        const editButton = document.getElementById('edit-button');
-        const cancelEditButton = document.getElementById('cancel-edit-button');
-        const saveEditButton = document.getElementById('save-edit-button');
-        const editDateInput = document.getElementById('edit-date-input');
-        const editDescInput = document.getElementById('edit-desc-input');
-
-        let uploadedImageObjects = []; 
-        let currentIndex = 0;
-        
-        const DB_NAME = 'PhotoViewerDB';
-        const STORE_NAME = 'ImageStore';
-        let db;
-
-        function getImageUrl(index) {
-            if(index < 0 || index >= uploadedImageObjects.length) return '';
-            const obj = uploadedImageObjects[index];
-            if (!obj.url) obj.url = URL.createObjectURL(obj.file);
-            return obj.url;
-        }
-
-        let isDragging = false, startPosX = 0, currentTranslate = 0, animationID;
-        function getPositionX(event) { return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX; }
-
-        function updateSlides() {
-            imgPrev.src = getImageUrl(currentIndex - 1);
-            imgCurr.src = getImageUrl(currentIndex);
-            imgNext.src = getImageUrl(currentIndex + 1);
-
-            swipeTrack.style.transition = 'none';
-            swipeTrack.style.transform = `translate3d(-33.333%, 0, 0)`;
-
-            const currObj = uploadedImageObjects[currentIndex];
-            if(currObj) {
-                displayDateText.textContent = currObj.date;
-                displayDescription.textContent = currObj.description;
-            }
-        }
-
-        function dragStart(event) { 
-            if(event.type === 'touchstart' && event.touches.length > 1) return;
-            isDragging = true; startPosX = getPositionX(event); 
-            swipeTrack.style.transition = 'none'; 
-            detailsOverlay.style.opacity = '0';  
-            detailsOverlay.style.transform = 'translate(-50%, 20px)';
-            cancelAnimationFrame(animationID); animationLoop();
-        }
-
-        function animationLoop() {
-            if(isDragging) {
-                swipeTrack.style.transform = `translate3d(calc(-33.333% + ${currentTranslate}px), 0, 0)`;
-                animationID = requestAnimationFrame(animationLoop);
-            }
-        }
-
-        function dragMove(event) { 
-            if (!isDragging) return;
-            let moveX = getPositionX(event) - startPosX; 
-            if (currentIndex === 0 && moveX > 0) moveX *= 0.3; 
-            else if (currentIndex === uploadedImageObjects.length - 1 && moveX < 0) moveX *= 0.3;
-            currentTranslate = moveX;
-        }
-
-        function dragEnd() {
-            if(!isDragging) return;
-            isDragging = false; cancelAnimationFrame(animationID);
-            const threshold = window.innerWidth * 0.15; 
+        // Robust YouTube URL Parser & Validator
+        function extractVideoId(url) {
+            if (!url) return null;
+            cleanedUrl = url.trim();
             
-            if (currentTranslate < -threshold && currentIndex < uploadedImageObjects.length - 1) {
-                swipeTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
-                swipeTrack.style.transform = `translate3d(-66.666%, 0, 0)`;
-                currentIndex++; setTimeout(finalizeSlide, 400);
-            } else if (currentTranslate > threshold && currentIndex > 0) {
-                swipeTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
-                swipeTrack.style.transform = `translate3d(0%, 0, 0)`;
-                currentIndex--; setTimeout(finalizeSlide, 400);
-            } else {
-                swipeTrack.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
-                swipeTrack.style.transform = `translate3d(-33.333%, 0, 0)`;
-                detailsOverlay.style.opacity = '1'; detailsOverlay.style.transform = 'translate(-50%, 0)';
+            // Regex patterns for standard watch, short links, embed, and shorts
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = cleanedUrl.match(regExp);
+
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function validateAndGetId() {
+            const val = urlInput.value.trim();
+            if (!val) {
+                showError("Please enter or paste a YouTube video URL.");
+                return null;
             }
-            currentTranslate = 0;
-        }
 
-        function finalizeSlide() {
-            updateSlides(); updateUI();
-            detailsOverlay.style.opacity = '1'; detailsOverlay.style.transform = 'translate(-50%, 0)';
-        }
-
-        function displayImage(newIndex) {
-            if (newIndex === currentIndex) return;
-            const directionOffset = newIndex > currentIndex ? '-66.666%' : '0%';
-            if (Math.abs(newIndex - currentIndex) > 1) {
-                if (newIndex > currentIndex) imgNext.src = getImageUrl(newIndex);
-                else imgPrev.src = getImageUrl(newIndex);
+            const videoId = extractVideoId(val);
+            if (!videoId) {
+                showError("Invalid YouTube URL. Please use standard or youtu.be links.");
+                return null;
             }
-            detailsOverlay.style.opacity = '0';
-            swipeTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
-            swipeTrack.style.transform = `translate3d(${directionOffset}, 0, 0)`;
-            currentIndex = newIndex; setTimeout(finalizeSlide, 400);
+
+            hideError();
+            return videoId;
         }
 
-        function initDB() {
-            const request = indexedDB.open(DB_NAME, 1);
-            request.onupgradeneeded = e => e.target.result.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-            request.onsuccess = e => { db = e.target.result; loadImagesFromDB(); };
-        }
-        
-        function loadImagesFromDB() {
-            if (!db) return;
-            const request = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll();
-            request.onsuccess = () => { processImageData(request.result); };
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorMessage.style.display = 'flex';
+            urlInput.style.borderColor = 'var(--accent)';
         }
 
-        async function addImagesToDB(files) {
-            if (!db) return;
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            const today = new Date().toISOString().split('T')[0];
-            files.forEach(file => store.add({ file: file, date: today, description: 'Add a description...' }));
-            return tx.complete;
+        function hideError() {
+            errorMessage.style.display = 'none';
+            urlInput.style.borderColor = 'var(--border-color)';
         }
 
-        async function updateImageDetailsInDB(id, newDetails) {
-            if (!db) return;
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            const getRequest = store.get(id);
-            getRequest.onsuccess = () => {
-                const data = getRequest.result;
-                data.date = newDetails.date; data.description = newDetails.description;
-                store.put(data);
-            };
-        }
-
-        function processImageData(imageObjects) {
-            uploadedImageObjects = imageObjects.reverse(); 
-            if (uploadedImageObjects.length > 0) setupViewer(0);
-        }
-        
-        function handleFileSelect(event) {
-            const newFiles = Array.from(event.target.files);
-            if (newFiles.length > 0) addImagesToDB(newFiles).then(() => { loadImagesFromDB(); });
-            event.target.value = null;
-        }
-
-        function setupViewer(startIndex = 0) {
-            if (uploadedImageObjects.length === 0) { 
-                uploadContainer.style.display = 'flex'; viewerContainer.style.display = 'none'; return; 
-            }
-            uploadContainer.style.display = 'none'; viewerContainer.style.display = 'flex';
-            currentIndex = startIndex; createThumbnails(); updateSlides(); updateUI();
-            detailsOverlay.style.opacity = '1'; detailsOverlay.style.transform = 'translate(-50%, 0)';
-        }
-
-        function createThumbnails() {
-            thumbnailContainer.innerHTML = ''; let i = 0;
-            function loadBatch() {
-                const batchLimit = Math.min(i + 15, uploadedImageObjects.length);
-                for (; i < batchLimit; i++) {
-                    const thumb = document.createElement('img');
-                    thumb.src = getImageUrl(i); thumb.classList.add('thumbnail-img'); thumb.dataset.index = i;
-                    if (i === currentIndex) thumb.classList.add('active');
-                    let idx = i; thumb.addEventListener('click', () => displayImage(idx));
-                    thumbnailContainer.appendChild(thumb);
-                }
-                if (i < uploadedImageObjects.length) requestAnimationFrame(loadBatch); 
-            }
-            loadBatch();
-        }
-        
-        function updateUI() {
-            pageCounter.textContent = `${currentIndex + 1} / ${uploadedImageObjects.length}`;
-            document.querySelectorAll('.thumbnail-img').forEach((thumb) => {
-                const idx = parseInt(thumb.dataset.index);
-                thumb.classList.toggle('active', idx === currentIndex);
-                if (idx === currentIndex) thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            });
-        }
-        
-        function clearGallery() {
-            if (confirm("Are you sure you want to permanently delete all photos?")) {
-                const request = db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).clear();
-                request.onsuccess = () => { uploadedImageObjects = []; setupViewer(0); };
-            }
-        }
-
-        function showEditView() {
-            const currentObj = uploadedImageObjects[currentIndex];
-            editDateInput.value = currentObj.date; editDescInput.value = currentObj.description;
-            detailsDisplayView.style.display = 'none'; detailsEditView.style.display = 'flex';
-        }
-
-        function showDisplayView() {
-            detailsDisplayView.style.display = 'flex'; detailsEditView.style.display = 'none';
-        }
-
-        function saveDetails() {
-            const currentObj = uploadedImageObjects[currentIndex];
-            const newDetails = { date: editDateInput.value, description: editDescInput.value };
-            updateImageDetailsInDB(currentObj.id, newDetails);
-            currentObj.date = newDetails.date; currentObj.description = newDetails.description;
-            displayDateText.textContent = newDetails.date; displayDescription.textContent = newDetails.description;
-            showDisplayView();
-        }
-
-        // 📄 --- PDF GENERATION LOGIC ---
-        async function exportToPDF() {
-            if (uploadedImageObjects.length === 0) return;
-            
-            const originalHTML = downloadPdfButton.innerHTML;
-            downloadPdfButton.innerHTML = '<span class="spinner"></span> <span>Wait...</span>';
-            downloadPdfButton.disabled = true;
-
+        // Paste Button Handler
+        pasteBtn.addEventListener('click', async () => {
             try {
-                if (!window.jspdf) throw new Error("PDF Library is still loading...");
-                
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4'); 
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-
-                for (let i = 0; i < uploadedImageObjects.length; i++) {
-                    if (i > 0) pdf.addPage();
-                    
-                    const obj = uploadedImageObjects[i];
-                    
-                    const img = new Image();
-                    img.src = getImageUrl(i);
-                    await new Promise(resolve => { img.onload = resolve; });
-
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1200;
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    if (width > MAX_WIDTH) {
-                        height = height * (MAX_WIDTH / width);
-                        width = MAX_WIDTH;
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    const imgData = canvas.toDataURL('image/jpeg', 0.7); 
-
-                    const margin = 15;
-                    const maxPdfImgWidth = pageWidth - (margin * 2);
-                    const maxPdfImgHeight = pageHeight - 60; 
-                    
-                    let pdfImgWidth = maxPdfImgWidth;
-                    let pdfImgHeight = (height * maxPdfImgWidth) / width;
-                    
-                    if (pdfImgHeight > maxPdfImgHeight) {
-                        pdfImgHeight = maxPdfImgHeight;
-                        pdfImgWidth = (width * maxPdfImgHeight) / height;
-                    }
-                    
-                    const xPos = (pageWidth - pdfImgWidth) / 2;
-                    pdf.addImage(imgData, 'JPEG', xPos, margin, pdfImgWidth, pdfImgHeight);
-                    
-                    pdf.setFontSize(12);
-                    pdf.setTextColor(100);
-                    pdf.text(`Date: ${obj.date}`, margin, pageHeight - 35);
-                    
-                    pdf.setFontSize(16);
-                    pdf.setTextColor(20);
-                    const splitDesc = pdf.splitTextToSize(`Details: ${obj.description}`, maxPdfImgWidth);
-                    pdf.text(splitDesc, margin, pageHeight - 25);
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const text = await navigator.clipboard.readText();
+                    urlInput.value = text;
+                    hideError();
+                    showToast("URL pasted from clipboard!");
+                } else {
+                    showToast("Clipboard permission not granted or supported.", "error");
                 }
-
-                pdf.save("Pro_Gallery_Export.pdf");
-
-            } catch (error) {
-                console.error(error);
-                alert("Error generating PDF. Make sure you have internet access to load the PDF library.");
-            } finally {
-                downloadPdfButton.innerHTML = originalHTML;
-                downloadPdfButton.disabled = false;
-            }
-        }
-
-        fileInput.addEventListener('change', handleFileSelect);
-        clearGalleryButton.addEventListener('click', clearGallery);
-        downloadPdfButton.addEventListener('click', exportToPDF); 
-        
-        document.addEventListener('keydown', e => {
-            if(viewerContainer.style.display === 'flex') {
-                if (e.key === 'ArrowLeft' && currentIndex > 0) displayImage(currentIndex - 1);
-                else if (e.key === 'ArrowRight' && currentIndex < uploadedImageObjects.length - 1) displayImage(currentIndex + 1);
+            } catch (err) {
+                showError("Unable to paste from clipboard. Please paste manually.");
             }
         });
 
-        mainImageWrapper.addEventListener('mousedown', dragStart); mainImageWrapper.addEventListener('mousemove', dragMove);
-        mainImageWrapper.addEventListener('mouseup', dragEnd); mainImageWrapper.addEventListener('mouseleave', dragEnd);
-        mainImageWrapper.addEventListener('touchstart', dragStart, { passive: false });
-        mainImageWrapper.addEventListener('touchmove', (e) => { if(isDragging) { e.preventDefault(); dragMove(e); } }, { passive: false });
-        mainImageWrapper.addEventListener('touchend', dragEnd);
-        
-        editButton.addEventListener('click', showEditView);
-        cancelEditButton.addEventListener('click', showDisplayView);
-        saveEditButton.addEventListener('click', saveDetails);
+        // Copy Button Handler
+        copyBtn.addEventListener('click', () => {
+            const val = urlInput.value.trim();
+            if (!val) {
+                showError("Nothing to copy!");
+                return;
+            }
+            navigator.clipboard.writeText(val).then(() => {
+                showToast("Video URL copied to clipboard!");
+            }).catch(() => {
+                showToast("Failed to copy URL.", "error");
+            });
+        });
 
+        // Play Video Button Handler
+        playBtn.addEventListener('click', () => {
+            const videoId = validateAndGetId();
+            if (!videoId) return;
+
+            // Show loading state on button
+            const originalHTML = playBtn.innerHTML;
+            playBtn.innerHTML = `<div class="spinner"></div> Loading...`;
+            playBtn.disabled = true;
+
+            setTimeout(() => {
+                // Set Embedded Player Source
+                youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+                
+                // Configure External/Mobile Options
+                // Intent links or deep links for mobile apps / fallback web
+                externalAppBtn.href = `vnd.youtube://${videoId}`;
+                pipBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
+
+                // Display player section with smooth layout transition
+                playerSection.style.display = 'flex';
+                playBtn.innerHTML = originalHTML;
+                playBtn.disabled = false;
+
+                // Smooth scroll to player on smaller screens
+                playerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                showToast("Video loaded successfully!");
+            }, 350);
+        });
+
+        // Reset/Clear Player
+        clearBtn.addEventListener('click', () => {
+            youtubeIframe.src = '';
+            playerSection.style.display = 'none';
+            urlInput.value = '';
+            hideError();
+            showToast("Player reset.");
+        });
+
+        // Enter key shortcut trigger
+        urlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                playBtn.click();
+            }
+        });
+
+        // Real-time input cleaning
+        urlInput.addEventListener('input', () => {
+            if (errorMessage.style.display === 'flex') {
+                hideError();
+            }
+        });
     </script>
 </body>
 </html>
