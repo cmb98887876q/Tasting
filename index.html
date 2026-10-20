@@ -1,606 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>External Video Player</title>
-    <!-- Google Fonts & FontAwesome for Modern Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-color: #0f111a;
-            --surface-color: rgba(26, 31, 44, 0.7);
-            --surface-solid: #1a1f2c;
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --accent: #ef4444;
-            --download-color: #10b981;
-            --download-hover: #059669;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --glow-color: rgba(99, 102, 241, 0.25);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<title>YouTube Downloader</title>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* Background Animated Glows */
-        .bg-glow {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--primary);
-            filter: blur(140px);
-            border-radius: 50%;
-            z-index: -1;
-            top: -50px;
-            left: 10%;
-            opacity: 0.3;
-            animation: pulseGlow 8s ease-in-out infinite alternate;
-        }
+:root {
+    --bg: #080b12;
+    --card: #111622;
+    --border: #252d3d;
+    --text: #ffffff;
+    --muted: #929caf;
+    --accent: #ff354f;
+}
 
-        .bg-glow-2 {
-            position: absolute;
-            width: 350px;
-            height: 350px;
-            background: #ec4899;
-            filter: blur(160px);
-            border-radius: 50%;
-            z-index: -1;
-            bottom: -50px;
-            right: 10%;
-            opacity: 0.2;
-            animation: pulseGlow 10s ease-in-out infinite alternate-reverse;
-        }
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
 
-        @keyframes pulseGlow {
-            0% { transform: scale(1); opacity: 0.2; }
-            100% { transform: scale(1.2); opacity: 0.35; }
-        }
+header {
+    padding: 22px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
 
-        /* Container & Glassmorphism */
-        .container {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            z-index: 1;
-            margin-top: 20px;
-            margin-bottom: 40px;
-        }
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+}
 
-        header {
-            text-align: center;
-            margin-bottom: 8px;
-        }
+.logo span {
+    color: var(--accent);
+}
 
-        header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
+.badge {
+    color: #b8c2d6;
+    font-size: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 20px;
+}
 
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+main {
+    width: 90%;
+    max-width: 750px;
+    margin: 90px auto;
+    text-align: center;
+}
 
-        .card {
-            background: var(--surface-color);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            transition: var(--transition);
-        }
+.tag {
+    display: inline-block;
+    padding: 8px 13px;
+    border-radius: 20px;
+    background: #25151d;
+    color: #ff7183;
+    font-size: 12px;
+    margin-bottom: 24px;
+}
 
-        /* Input Group */
-        .input-group-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+h1 {
+    font-size: clamp(34px, 7vw, 58px);
+    line-height: 1.12;
+    margin-bottom: 20px;
+}
 
-        .input-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+h1 span {
+    color: var(--accent);
+}
 
-        .input-container i.fa-link {
-            position: absolute;
-            left: 16px;
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
+.description {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 530px;
+    margin: 0 auto 35px;
+}
 
-        input[type="text"] {
-            width: 100%;
-            background: rgba(15, 17, 26, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px 16px 14px 48px;
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition);
-        }
+.downloader {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 25px;
+    border-radius: 18px;
+    text-align: left;
+    box-shadow: 0 20px 70px #0005;
+}
 
-        input[type="text"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--glow-color);
-        }
+label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #c9d1df;
+}
 
-        input[type="text"]::placeholder {
-            color: var(--text-muted);
-        }
+.input-group {
+    display: flex;
+    gap: 10px;
+}
 
-        /* Action Buttons Row */
-        .actions-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+input {
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #090d15;
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
 
-        button, .btn-link-action {
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            font-size: 0.9rem;
-            border-radius: 10px;
-            padding: 10px 16px;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: var(--transition);
-        }
+input:focus {
+    border-color: var(--accent);
+}
 
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-            flex: 1;
-            justify-content: center;
-        }
+button {
+    border: none;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    padding: 0 22px;
+    border-radius: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
 
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        }
+button:hover {
+    filter: brightness(1.12);
+}
 
-        .btn-download {
-            background-color: var(--download-color);
-            color: white;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
-            justify-content: center;
-        }
+button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
 
-        .btn-download:hover {
-            background-color: var(--download-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
+.status {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 25px;
+}
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
+.feature {
+    padding: 18px 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #0d111b;
+}
 
-        /* Error Feedback */
-        .error-message {
-            display: none;
-            color: var(--accent);
-            font-size: 0.85rem;
-            align-items: center;
-            gap: 6px;
-            margin-top: 4px;
-            animation: fadeIn 0.3s ease;
-        }
+.feature strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.feature p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
 
-        /* Player Section */
-        .player-section {
-            display: none;
-            flex-direction: column;
-            gap: 16px;
-            animation: fadeIn 0.4s ease;
-        }
+footer {
+    text-align: center;
+    padding: 30px 15px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+}
 
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+@media (max-width: 520px) {
+    header {
+        padding: 18px 5%;
+    }
 
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+    main {
+        margin: 55px auto;
+    }
 
-        /* Player Option Controls */
-        .player-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 10px;
-        }
+    .downloader {
+        padding: 18px;
+    }
 
-        .btn-control {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 12px;
-            border-radius: 10px;
-            justify-content: center;
-            font-weight: 500;
-            text-decoration: none;
-            text-align: center;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition);
-        }
+    .input-group {
+        flex-direction: column;
+    }
 
-        .btn-control:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--primary);
-            color: var(--text-main);
-        }
+    input, button {
+        min-height: 50px;
+    }
 
-        .btn-control i {
-            color: var(--primary);
-        }
-
-        .btn-control.download-control i {
-            color: var(--download-color);
-        }
-
-        .btn-control.download-control:hover {
-            border-color: var(--download-color);
-        }
-
-        /* Toast Notifications */
-        #toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 9999;
-        }
-
-        .toast {
-            background: var(--surface-solid);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 12px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1), fadeOut 0.3s ease 2.7s forwards;
-        }
-
-        .toast.success i { color: #10b981; }
-        .toast.error i { color: var(--accent); }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(10px); }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 600px) {
-            body { padding: 12px; }
-            header h1 { font-size: 1.8rem; }
-            .card { padding: 16px; }
-            .actions-row { flex-direction: column; }
-            .btn-primary, .btn-secondary, .btn-download { width: 100%; justify-content: center; }
-        }
-    </style>
+    .features {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="bg-glow"></div>
-    <div class="bg-glow-2"></div>
+<header>
+    <div class="logo">Video<span>Drop</span></div>
+    <div class="badge">VIDEO TOOL</div>
+</header>
 
-    <div class="container">
-        <header>
-            <h1>External Video Player</h1>
-            <p>Seamlessly embed, open, and download YouTube videos across web and mobile.</p>
-        </header>
+<main>
 
-        <!-- Input Card -->
-        <div class="card">
-            <div class="input-group-wrapper">
-                <div class="input-container">
-                    <i class="fa-solid fa-link"></i>
-                    <input type="text" id="urlInput" placeholder="Paste YouTube URL here (e.g., https://youtu.be/...)" autocomplete="off" spellcheck="false">
-                </div>
-                
-                <div class="error-message" id="errorMessage">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span id="errorText">Please enter a valid YouTube video link.</span>
-                </div>
+    <div class="tag">SIMPLE VIDEO LINK TOOL</div>
 
-                <div class="actions-row">
-                    <button class="btn-secondary" id="pasteBtn" title="Paste from clipboard">
-                        <i class="fa-solid fa-paste"></i> Paste
-                    </button>
-                    <button class="btn-secondary" id="copyBtn" title="Copy video URL">
-                        <i class="fa-solid fa-copy"></i> Copy
-                    </button>
-                    <button class="btn-download" id="downloadMainBtn" title="Download video link">
-                        <i class="fa-solid fa-download"></i> Download
-                    </button>
-                    <button class="btn-primary" id="playBtn">
-                        <i class="fa-solid fa-play"></i> Play
-                    </button>
-                </div>
-            </div>
+    <h1>Video downloads,<br><span>made simple.</span></h1>
+
+    <p class="description">
+        Paste a YouTube video link to check its format.
+        This demo shows how a downloader website interface works.
+    </p>
+
+    <section class="downloader">
+
+        <label for="videoUrl">Paste your YouTube video URL</label>
+
+        <div class="input-group">
+
+            <input
+                type="url"
+                id="videoUrl"
+                placeholder="https://www.youtube.com/watch?v=..."
+                autocomplete="url"
+            >
+
+            <button id="checkButton" onclick="checkVideo()">
+                Check Link
+            </button>
+
         </div>
 
-        <!-- Player Card Section -->
-        <div class="card player-section" id="playerSection">
-            <div class="video-wrapper">
-                <iframe id="youtubeIframe" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-
-            <!-- Alternative Playback & Download Controls -->
-            <div class="player-controls">
-                <a href="#" id="downloadAppBtn" class="btn-control download-control" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-download"></i> Download Video
-                </a>
-                <a href="#" id="externalAppBtn" class="btn-control" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-mobile-screen-button"></i> Open in App
-                </a>
-                <a href="#" id="pipBtn" class="btn-control" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Original Link
-                </a>
-                <button class="btn-control" id="clearBtn" style="border: none; cursor: pointer;">
-                    <i class="fa-solid fa-rotate-right"></i> Reset
-                </button>
-            </div>
+        <div class="status" id="status" role="status" aria-live="polite">
+            Your video information will appear here.
         </div>
-    </div>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container"></div>
+    </section>
 
-    <script>
-        // DOM Elements
-        const urlInput = document.getElementById('urlInput');
-        const pasteBtn = document.getElementById('pasteBtn');
-        const copyBtn = document.getElementById('copyBtn');
-        const playBtn = document.getElementById('playBtn');
-        const downloadMainBtn = document.getElementById('downloadMainBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
-        const playerSection = document.getElementById('playerSection');
-        const youtubeIframe = document.getElementById('youtubeIframe');
-        const externalAppBtn = document.getElementById('externalAppBtn');
-        const downloadAppBtn = document.getElementById('downloadAppBtn');
-        const pipBtn = document.getElementById('pipBtn');
-        const toastContainer = document.getElementById('toast-container');
+    <section class="features">
 
-        // Helper function to show notifications (Toast)
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
-            toastContainer.appendChild(toast);
+        <div class="feature">
+            <strong>Easy to Use</strong>
+            <p>Paste a link and validate it.</p>
+        </div>
 
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
+        <div class="feature">
+            <strong>Responsive UI</strong>
+            <p>Works on mobile and desktop.</p>
+        </div>
 
-        // Robust YouTube URL Parser & Validator
-        function extractVideoId(url) {
-            if (!url) return null;
-            const cleanedUrl = url.trim();
-            
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = cleanedUrl.match(regExp);
+        <div class="feature">
+            <strong>Single File</strong>
+            <p>HTML, CSS and JavaScript together.</p>
+        </div>
 
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
+    </section>
 
-        function validateAndGetId() {
-            const val = urlInput.value.trim();
-            if (!val) {
-                showError("Please enter or paste a YouTube video URL.");
-                return null;
-            }
+</main>
 
-            const videoId = extractVideoId(val);
-            if (!videoId) {
-                showError("Invalid YouTube URL. Please use standard or youtu.be links.");
-                return null;
-            }
+<footer>
+    Demo project · Use authorized video sources and respect copyright.
+</footer>
 
-            hideError();
-            return videoId;
-        }
+<script>
+function checkVideo() {
 
-        function showError(msg) {
-            errorText.textContent = msg;
-            errorMessage.style.display = 'flex';
-            urlInput.style.borderColor = 'var(--accent)';
-        }
+    const input = document.getElementById("videoUrl");
+    const button = document.getElementById("checkButton");
+    const status = document.getElementById("status");
 
-        function hideError() {
-            errorMessage.style.display = 'none';
-            urlInput.style.borderColor = 'var(--border-color)';
-        }
+    const value = input.value.trim();
 
-        // Paste Button Handler
-        pasteBtn.addEventListener('click', async () => {
-            try {
-                if (navigator.clipboard && navigator.clipboard.readText) {
-                    const text = await navigator.clipboard.readText();
-                    urlInput.value = text;
-                    hideError();
-                    showToast("URL pasted from clipboard!");
-                } else {
-                    showToast("Clipboard permission not granted or supported.", "error");
-                }
-            } catch (err) {
-                showError("Unable to paste from clipboard. Please paste manually.");
-            }
-        });
+    if (!value) {
+        status.textContent = "Please paste a video URL first.";
+        input.focus();
+        return;
+    }
 
-        // Copy Button Handler
-        copyBtn.addEventListener('click', () => {
-            const val = urlInput.value.trim();
-            if (!val) {
-                showError("Nothing to copy!");
-                return;
-            }
-            navigator.clipboard.writeText(val).then(() => {
-                showToast("Video URL copied to clipboard!");
-            }).catch(() => {
-                showToast("Failed to copy URL.", "error");
-            });
-        });
+    let url;
 
-        // Download Button Handlers
-        function handleDownload() {
-            const videoId = validateAndGetId();
-            if (!videoId) return;
+    try {
+        url = new URL(value);
+    } catch {
+        status.textContent = "Please enter a valid URL.";
+        return;
+    }
 
-            // Secure external redirection URL handler compatible with standard download resolvers/services
-            const fullUrl = `https://www.youtube.com/watch?v=${videoId}`;
-            const downloadServiceUrl = `https://ssyoutube.com/watch?v=${videoId}`; // Or similar auxiliary safe utility
-            
-            window.open(downloadServiceUrl, '_blank', 'noopener,noreferrer');
-            showToast("Redirecting to video download service...");
-        }
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
 
-        downloadMainBtn.addEventListener('click', handleDownload);
+    const isYouTube =
+        host === "youtube.com" ||
+        host === "m.youtube.com" ||
+        host === "music.youtube.com" ||
+        host === "youtu.be" ||
+        host === "youtube-nocookie.com";
 
-        // Play Video Button Handler
-        playBtn.addEventListener('click', () => {
-            const videoId = validateAndGetId();
-            if (!videoId) return;
+    if (url.protocol !== "https:" || !isYouTube) {
+        status.textContent = "Please enter a valid HTTPS YouTube URL.";
+        return;
+    }
 
-            const originalHTML = playBtn.innerHTML;
-            playBtn.innerHTML = `<div class="spinner"></div> Loading...`;
-            playBtn.disabled = true;
+    const videoId = host === "youtu.be"
+        ? url.pathname.split("/").filter(Boolean)[0]
+        : url.searchParams.get("v");
 
-            setTimeout(() => {
-                // Set Embedded Player Source
-                youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
-                
-                // Configure Actions and Links
-                externalAppBtn.href = `vnd.youtube://${videoId}`;
-                downloadAppBtn.href = `https://ssyoutube.com/watch?v=${videoId}`;
-                pipBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
+    if (
+        videoId &&
+        !/^[a-zA-Z0-9_-]{11}$/.test(videoId)
+    ) {
+        status.textContent = "The video ID does not appear valid.";
+        return;
+    }
 
-                // Display player section
-                playerSection.style.display = 'flex';
-                playBtn.innerHTML = originalHTML;
-                playBtn.disabled = false;
+    if (!videoId && !/^\/(shorts|embed|live)\/[a-zA-Z0-9_-]{11}\/?$/.test(url.pathname)) {
+        status.textContent = "Please enter a supported video URL.";
+        return;
+    }
 
-                playerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                showToast("Video loaded successfully!");
-            }, 350);
-        });
+    button.disabled = true;
+    button.textContent = "Checking...";
 
-        // Reset/Clear Player
-        clearBtn.addEventListener('click', () => {
-            youtubeIframe.src = '';
-            playerSection.style.display = 'none';
-            urlInput.value = '';
-            hideError();
-            showToast("Player reset.");
-        });
+    status.textContent = "The URL format looks valid. This demo does not fetch or download video files.";
 
-        // Enter key shortcut trigger
-        urlInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                playBtn.click();
-            }
-        });
+    setTimeout(() => {
+        button.disabled = false;
+        button.textContent = "Check Link";
+    }, 500);
+}
+</script>
 
-        // Real-time input cleaning
-        urlInput.addEventListener('input', () => {
-            if (errorMessage.style.display === 'flex') {
-                hideError();
-            }
-        });
-    </script>
 </body>
 </html>
