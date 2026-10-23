@@ -3,21 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>External Video Player</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>ITI Master – Online Mock Test Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f1117;
-            --card-bg: rgba(22, 27, 34, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-primary: #f0f6fc;
-            --text-secondary: #8b949e;
-            --accent-glow: rgba(239, 68, 68, 0.15);
-            --primary: #ef4444;
-            --primary-hover: #dc2626;
-            --success: #22c55e;
-            --error: #ef4444;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #1d4ed8;
+            --primary-hover: #1e40af;
+            --primary-light: #eff6ff;
+            --navy: #0f172a;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #334155;
+            --text-heading: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --green: #16a34a;
+            --green-light: #dcfce7;
+            --red: #dc2626;
+            --red-light: #fee2e2;
+            --orange: #d97706;
+            --orange-light: #fef3c7;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --gray-state: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 0.75rem;
+            --transition: all 0.2s ease-in-out;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --primary-light: #1e293b;
+            --navy: #f8fafc;
+            --bg-body: #090d16;
+            --bg-card: #111827;
+            --text-main: #cbd5e1;
+            --text-heading: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --green: #22c55e;
+            --green-light: #064e3b;
+            --red: #ef4444;
+            --red-light: #7f1d1d;
+            --orange: #f59e0b;
+            --orange-light: #78350f;
+            --purple: #a78bfa;
+            --purple-light: #4c1d95;
+            --gray-state: #1e293b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -25,510 +61,2521 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(239, 68, 68, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 40%);
-            color: var(--text-primary);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .container {
-            width: 100%;
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 24px 16px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Header */
         header {
-            text-align: center;
-            margin-bottom: 28px;
-            animation: fadeInDown 0.6s ease-out;
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
         }
 
-        .logo-badge {
-            display: inline-flex;
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0.75rem 1.5rem;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            justify-content: space-between;
         }
 
-        h1 {
-            font-size: 2.2rem;
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff 30%, #a1a1aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.25rem;
+            box-shadow: 0 2px 4px rgba(29, 78, 216, 0.3);
         }
 
-        p.subtitle {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+        .logo-text h1 {
+            font-size: 1.25rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            line-height: 1.2;
         }
 
-        /* Glass Card */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
-                        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-            animation: fadeInUp 0.6s ease-out;
-            margin-bottom: 20px;
+        .logo-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        /* Input Group */
-        .input-group {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .url-input-wrapper {
-            position: relative;
+        .nav-links {
             display: flex;
             align-items: center;
+            gap: 1.5rem;
+            list-style: none;
         }
 
-        input[type="text"] {
-            width: 100%;
-            background: rgba(13, 17, 23, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 14px 110px 14px 16px;
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
             font-size: 0.95rem;
-            color: var(--text-primary);
-            outline: none;
             transition: var(--transition);
+            cursor: pointer;
         }
 
-        input[type="text"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
-            background: rgba(13, 17, 23, 0.9);
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
         }
 
-        input[type="text"]::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .input-actions {
-            position: absolute;
-            right: 6px;
+        .header-actions {
             display: flex;
-            gap: 4px;
+            align-items: center;
+            gap: 1rem;
         }
 
         .icon-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: none;
-            color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            cursor: pointer;
+            background: var(--primary-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-heading);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
             transition: var(--transition);
         }
 
         .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: var(--text-primary);
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
-        .icon-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        /* Error Banner */
-        .error-msg {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
+        .hamburger {
             display: none;
-            align-items: center;
-            gap: 8px;
-            animation: shake 0.4s ease-in-out;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-heading);
+            font-size: 1.5rem;
         }
 
-        .error-msg.visible {
-            display: flex;
+        main {
+            flex: 1;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
         }
 
-        /* Action Buttons Grid */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
             font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
-            border: none;
             transition: var(--transition);
+            border: none;
             text-decoration: none;
-            width: 100%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .btn-primary {
-            background: var(--primary);
+            background-color: var(--primary);
             color: white;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
         }
 
         .btn-primary:hover {
-            background: var(--primary-hover);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
-            transform: translateY(-1px);
+            background-color: var(--primary-hover);
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-heading);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
-        .full-width {
+        .btn-success {
+            background-color: var(--green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        .btn-danger {
+            background-color: var(--red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-warning {
+            background-color: var(--orange);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #b45309;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary), #1e3a8a);
+            color: white;
+            border-radius: 1.25rem;
+            padding: 4rem 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .hero h2 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            max-width: 650px;
+            margin: 0 auto 2rem auto;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.75rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .trades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .trade-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .trade-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .trade-card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .trade-badge {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .trade-info h3 {
+            font-size: 1.15rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .trade-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .trade-card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .trade-card-actions .btn {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .trade-card-actions .btn-full {
             grid-column: span 2;
         }
 
-        /* Player Container Section */
-        .player-container-wrapper {
-            margin-top: 20px;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #000;
-            border: 1px solid var(--card-border);
-            display: none;
-            position: relative;
-            aspect-ratio: 16/9;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 3rem;
         }
 
-        .player-container-wrapper.active {
-            display: block;
-            animation: fadeIn 0.4s ease-out;
+        .subject-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .subject-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            background-color: var(--primary-light);
         }
 
-        /* Notification Toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1e293b;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 50px;
+        .subject-card h4 {
+            color: var(--text-heading);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-box h4 {
+            color: var(--text-heading);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-box p {
+            color: var(--text-muted);
             font-size: 0.9rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1000;
+            line-height: 1.5;
+        }
+
+        .filter-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background-color: var(--bg-body);
+            color: var(--text-heading);
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+        }
+
+        .tests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .test-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .test-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .test-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 50rem;
+        }
+
+        .badge-primary { background: var(--primary-light); color: var(--primary); }
+        .badge-success { background: var(--green-light); color: var(--green); }
+        .badge-warning { background: var(--orange-light); color: var(--orange); }
+        .badge-purple { background: var(--purple-light); color: var(--purple); }
+
+        .test-card h3 {
+            font-size: 1.2rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .test-info-list {
+            list-style: none;
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .test-info-list li {
+            font-size: 0.9rem;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+        }
+
+        .instructions-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .instructions-card h2 {
+            font-size: 1.75rem;
+            color: var(--text-heading);
+            margin-bottom: 1.5rem;
+        }
+
+        .instruction-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--primary-light);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .instruction-meta-item span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .instruction-meta-item strong {
+            font-size: 1.1rem;
+            color: var(--text-heading);
+        }
+
+        .instructions-list {
+            margin-bottom: 2rem;
+            padding-left: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-heading);
+        }
+
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .exam-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 968px) {
+            .exam-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .exam-main {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 520px;
+            justify-content: space-between;
+        }
+
+        .exam-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .exam-q-num {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .exam-lang-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .lang-btn {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 50rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-body);
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .exam-question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-heading);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .exam-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        .exam-option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background-color: var(--bg-body);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .exam-option-item:hover {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .exam-option-item input {
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+        }
+
+        .exam-option-item label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 1rem;
+            color: var(--text-heading);
+        }
+
+        .exam-footer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.25rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .exam-footer-left, .exam-footer-right {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .exam-sidebar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .timer-box {
+            background: var(--primary-light);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .timer-box span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .timer-box h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: monospace;
+        }
+
+        .palette-legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-not-visited { background: var(--gray-state); border: 1px solid var(--border-color); }
+        .dot-not-answered { background: var(--red); }
+        .dot-answered { background: var(--green); }
+        .dot-marked { background: var(--purple); }
+
+        .question-palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0.25rem;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-body);
+            color: var(--text-heading);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .palette-btn.not-visited { background: var(--bg-body); color: var(--text-muted); }
+        .palette-btn.not-answered { background: var(--red-light); color: var(--red); border-color: var(--red); }
+        .palette-btn.answered { background: var(--green-light); color: var(--green); border-color: var(--green); }
+        .palette-btn.marked { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+        .palette-btn.current { border: 2px solid var(--primary); box-shadow: 0 0 0 2px rgba(29,78,216,0.3); }
+
+        .result-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .result-header h2 {
+            font-size: 2.25rem;
+            color: var(--text-heading);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-message-badge {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 0.75rem;
+        }
+
+        .score-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .score-card {
+            background: var(--primary-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .score-card span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .score-card h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-heading);
+        }
+
+        .result-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .result-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .detail-row span:first-child {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .detail-row span:last-child {
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .review-item {
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .review-item.correct { border-left: 5px solid var(--green); }
+        .review-item.incorrect { border-left: 5px solid var(--red); }
+        .review-item.unanswered { border-left: 5px solid var(--orange); }
+
+        .review-q-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+        }
+
+        .review-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-option {
+            padding: 0.65rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+        }
+
+        .review-option.is-correct {
+            background-color: var(--green-light);
+            color: var(--green);
+            border-color: var(--green);
+            font-weight: 600;
+        }
+
+        .review-option.is-incorrect {
+            background-color: var(--red-light);
+            color: var(--red);
+            border-color: var(--red);
+            font-weight: 600;
+        }
+
+        .explanation-box {
+            background: var(--primary-light);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            margin-top: 0.75rem;
+        }
+
+        .explanation-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .modal-card h3 {
+            font-size: 1.5rem;
+            color: var(--text-heading);
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--text-heading);
+            color: var(--bg-card);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            font-weight: 500;
+            font-size: 0.9rem;
+            z-index: 3000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
         .toast.show {
-            transform: translateX(-50%) translateY(0);
+            transform: translateY(0);
+            opacity: 1;
         }
 
-        /* Footer */
         footer {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 2.5rem 1.5rem;
+            margin-top: auto;
             text-align: center;
-            padding: 20px 0;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(255,255,255,0.03);
         }
 
-        /* Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            .card { padding: 16px; }
-            .actions-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--bg-card);
+                flex-direction: column;
+                padding: 1.5rem;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .hamburger {
+                display: block;
+            }
+            .hero h2 {
+                font-size: 2rem;
+            }
+            .hero {
+                padding: 2.5rem 1.5rem;
+            }
+            .filter-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-    <div class="container">
-        <header>
-            <div class="logo-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Streamlined Player
+    <header>
+        <div class="header-container">
+            <a class="logo-area" onclick="router('home')">
+                <div class="logo-icon">IM</div>
+                <div class="logo-text">
+                    <h1>ITI Master</h1>
+                    <span>Online Mock Test Platform</span>
+                </div>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="router('home')" class="nav-home active">Home</a></li>
+                <li><a onclick="router('tests')" class="nav-tests">Mock Tests</a></li>
+                <li><a onclick="router('progress')" class="nav-progress">My Progress</a></li>
+                <li><a onclick="router('about')" class="nav-about">About Us</a></li>
+            </ul>
+
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleTheme()" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
+                    🌓
+                </button>
+                <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                    ☰
+                </button>
             </div>
-            <h1>External Video Player</h1>
-            <p class="subtitle">Paste a YouTube link to embed, copy, or launch in external apps</p>
-        </header>
+        </div>
+    </header>
 
-        <div class="card">
-            <div class="input-group">
-                <div class="url-input-wrapper">
-                    <input type="text" id="urlInput" placeholder="Paste YouTube URL (e.g., youtu.be/... or watch?v=...)" autocomplete="off">
-                    <div class="input-actions">
-                        <button class="icon-btn" id="pasteBtn" title="Paste from clipboard">
-                            <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 16H5V5h2v3h10V5h2v14z"/></svg>
-                        </button>
-                        <button class="icon-btn" id="clearBtn" title="Clear input">
-                            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                        </button>
+    <main>
+        <!-- 1. HOME VIEW -->
+        <section id="view-home" class="view-section active">
+            <div class="hero">
+                <h2>Prepare Smarter. Score Better.</h2>
+                <p>Practice ITI CBT mock tests, improve your knowledge, and prepare confidently for your examinations.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="router('tests')">Start Mock Test</button>
+                    <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: white;" onclick="scrollToTrades()">Explore All Trades</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">10</div>
+                    <div class="stat-info">
+                        <h3>Available Trades</h3>
+                        <p>Popular ITI branches</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">500+</div>
+                    <div class="stat-info">
+                        <h3>Practice Questions</h3>
+                        <p>Curated & verified bank</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">30+</div>
+                    <div class="stat-info">
+                        <h3>Mock Test Sets</h3>
+                        <p>Year & subject wise</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">4</div>
+                    <div class="stat-info">
+                        <h3>Core Subjects</h3>
+                        <p>Theory, Science & more</p>
                     </div>
                 </div>
             </div>
 
-            <div class="error-msg" id="errorMsg">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 s1zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                <span id="errorText">Please enter a valid YouTube video link.</span>
+            <div class="section-header" id="trades-section">
+                <div class="section-title">
+                    <h2>Popular ITI Trades</h2>
+                    <p>Select your trade and year to start practicing CBT exams</p>
+                </div>
             </div>
 
-            <div class="actions-grid">
-                <button class="btn btn-primary" id="playEmbedBtn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    Play Embedded
-                </button>
-                <button class="btn btn-secondary" id="openExternalBtn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                    Open External
-                </button>
-                <button class="btn btn-secondary full-width" id="copyUrlBtn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                    Copy Video URL
-                </button>
+            <div class="trades-grid" id="popularTradesGrid">
+                <!-- Populated via JS -->
             </div>
 
-            <div class="player-container-wrapper" id="playerWrapper">
-                <div id="playerContainer"></div>
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Core Subjects Covered</h2>
+                    <p>Comprehensive syllabus for NCVT / ITI curriculum</p>
+                </div>
+            </div>
+
+            <div class="subjects-grid">
+                <div class="subject-card" onclick="filterBySubject('Trade Theory')">
+                    <div style="font-size: 2rem;">⚡</div>
+                    <h4>Trade Theory</h4>
+                </div>
+                <div class="subject-card" onclick="filterBySubject('Workshop Calculation and Science')">
+                    <div style="font-size: 2rem;">📐</div>
+                    <h4>Workshop Calculation & Science</h4>
+                </div>
+                <div class="subject-card" onclick="filterBySubject('Engineering Drawing')">
+                    <div style="font-size: 2rem;">📊</div>
+                    <h4>Engineering Drawing</h4>
+                </div>
+                <div class="subject-card" onclick="filterBySubject('Employability Skills')">
+                    <div style="font-size: 2rem;">💡</div>
+                    <h4>Employability Skills</h4>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Latest Mock Tests</h2>
+                    <p>Recently added test series for ITI students</p>
+                </div>
+                <button class="btn btn-outline" onclick="router('tests')">View All Tests</button>
+            </div>
+
+            <div class="tests-grid" id="latestTestsGrid">
+                <!-- Populated via JS -->
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Why Choose ITI Master?</h2>
+                    <p>Designed for maximum retention and exam readiness</p>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-box">
+                    <h4>Practice Anytime</h4>
+                    <p>Access tests 24/7 on your mobile phone, tablet, or computer with a seamless responsive design.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Instant Results</h4>
+                    <p>Get immediate scorecards, detailed answer breakdowns, and accuracy metrics right after test submission.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Topic-wise Tests</h4>
+                    <p>Isolate specific chapters and strengthen your weak areas with targeted multiple-choice question sets.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Performance Tracking</h4>
+                    <p>Track your previous scores, best attempts, and progress history stored safely in your browser.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. MOCK TESTS SELECTION VIEW -->
+        <section id="view-tests" class="view-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Mock Test Selection</h2>
+                    <p>Choose your trade, year, and subject to filter test sets</p>
+                </div>
+            </div>
+
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="filterTrade">Trade</label>
+                    <select id="filterTrade" onchange="applyTestFilters()">
+                        <option value="All">All Trades</option>
+                        <option value="Electrician">Electrician</option>
+                        <option value="Fitter">Fitter</option>
+                        <option value="Welder">Welder</option>
+                        <option value="COPA">COPA</option>
+                        <option value="Wireman">Wireman</option>
+                        <option value="Mechanic Diesel">Mechanic Diesel</option>
+                        <option value="Electronics Mechanic">Electronics Mechanic</option>
+                        <option value="Turner">Turner</option>
+                        <option value="Plumber">Plumber</option>
+                        <option value="Mechanic Motor Vehicle">Mechanic Motor Vehicle</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterYear">Year</label>
+                    <select id="filterYear" onchange="applyTestFilters()">
+                        <option value="All">All Years</option>
+                        <option value="First Year">First Year</option>
+                        <option value="Second Year">Second Year</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterSubject">Subject</label>
+                    <select id="filterSubject" onchange="applyTestFilters()">
+                        <option value="All">All Subjects</option>
+                        <option value="Trade Theory">Trade Theory</option>
+                        <option value="Workshop Calculation and Science">Workshop Calculation & Science</option>
+                        <option value="Engineering Drawing">Engineering Drawing</option>
+                        <option value="Employability Skills">Employability Skills</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="justify-content: flex-end;">
+                    <button class="btn btn-outline" onclick="resetFilters()">Reset Filters</button>
+                </div>
+            </div>
+
+            <div class="tests-grid" id="allTestsGrid">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- 3. TEST INSTRUCTIONS VIEW -->
+        <section id="view-instructions" class="view-section">
+            <div class="instructions-card" id="instructionsCardContent">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- 4. ONLINE EXAM INTERFACE VIEW -->
+        <section id="view-exam" class="view-section">
+            <div class="exam-wrapper">
+                <div class="exam-main">
+                    <div>
+                        <div class="exam-header-bar">
+                            <div class="exam-q-num" id="examQuestionCounter">Question 1 of 20</div>
+                            <div class="exam-lang-toggle">
+                                <button class="lang-btn active" id="langBtnEn" onclick="switchExamLang('en')">English</button>
+                                <button class="lang-btn" id="langBtnHi" onclick="switchExamLang('hi')">हिन्दी</button>
+                            </div>
+                        </div>
+
+                        <div class="exam-question-text" id="examQuestionText">
+                            Loading question...
+                        </div>
+
+                        <div class="exam-options-list" id="examOptionsList">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="exam-footer-bar">
+                        <div class="exam-footer-left">
+                            <button class="btn btn-outline" onclick="prevQuestion()">Previous</button>
+                            <button class="btn btn-warning" onclick="markForReview()">Mark for Review & Next</button>
+                            <button class="btn btn-outline" onclick="clearResponse()">Clear Response</button>
+                        </div>
+                        <div class="exam-footer-right">
+                            <button class="btn btn-primary" onclick="saveAndNext()">Save & Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exam-sidebar">
+                    <div class="timer-box">
+                        <span>Time Remaining</span>
+                        <h3 id="examTimerDisplay">00:00:00</h3>
+                    </div>
+
+                    <div class="palette-legend">
+                        <div class="legend-item"><div class="legend-dot dot-not-visited"></div>Not Visited</div>
+                        <div class="legend-item"><div class="legend-dot dot-not-answered"></div>Not Answered</div>
+                        <div class="legend-item"><div class="legend-dot dot-answered"></div>Answered</div>
+                        <div class="legend-item"><div class="legend-dot dot-marked"></div>Marked</div>
+                    </div>
+
+                    <div class="question-palette-grid" id="questionPaletteGrid">
+                        <!-- Populated via JS -->
+                    </div>
+
+                    <button class="btn btn-success" style="width: 100%; margin-top: 0.5rem;" onclick="confirmSubmitTest()">Submit Test</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. RESULT VIEW -->
+        <section id="view-result" class="view-section">
+            <div class="result-container" id="resultContainerContent">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- 6. PROGRESS VIEW -->
+        <section id="view-progress" class="view-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>My Progress & History</h2>
+                    <p>Track your test performance and stored browser statistics</p>
+                </div>
+            </div>
+
+            <div class="score-cards-grid" id="progressSummaryGrid">
+                <!-- Populated via JS -->
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Recent Test Attempts</h2>
+                </div>
+            </div>
+
+            <div class="tests-grid" id="progressHistoryGrid">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- 7. ABOUT VIEW -->
+        <section id="view-about" class="view-section">
+            <div class="instructions-card">
+                <h2>About ITI Master</h2>
+                <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+                    ITI Master is a modern, high-performance online mock test platform specifically designed for ITI (Industrial Training Institute) students preparing for NCVT All India Trade Test (AITT) Computer Based Examinations (CBT).
+                </p>
+                <h4 style="color: var(--text-heading); margin-bottom: 0.5rem;">Platform Highlights</h4>
+                <ul class="instructions-list">
+                    <li>Comprehensive question banks across core trades like Electrician, Fitter, Welder, and COPA.</li>
+                    <li>Standard CBT exam simulation with real-time countdown timer and question palette states.</li>
+                    <li>Dual-language support (English and Hindi) matching NCVT guidelines.</li>
+                    <li>Instant score calculation, percentage analysis, and detailed answer review system.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-card">
+            <h3 id="modalTitle">Confirm Action</h3>
+            <p id="modalDesc">Are you sure you want to submit the test?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirmBtn" onclick="executeModalAction()">Confirm</button>
             </div>
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotification">Action completed successfully</div>
+
     <footer>
-        <p>&copy; 2026 External Video Player. Built with HTML, CSS & Vanilla JS.</p>
+        <p>&copy; 2026 ITI Master – Online Mock Test Platform. All rights reserved. Built for ITI students.</p>
     </footer>
 
-    <div class="toast" id="toastNotification">Action successful</div>
-
     <script>
-        const urlInput = document.getElementById('urlInput');
-        const pasteBtn = document.getElementById('pasteBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const errorMsg = document.getElementById('errorMsg');
-        const errorText = document.getElementById('errorText');
-        const playEmbedBtn = document.getElementById('playEmbedBtn');
-        const openExternalBtn = document.getElementById('openExternalBtn');
-        const copyUrlBtn = document.getElementById('copyUrlBtn');
-        const playerWrapper = document.getElementById('playerWrapper');
-        const playerContainer = document.getElementById('playerContainer');
-        const toastNotification = document.getElementById('toastNotification');
+        /* ================= QUESTION DATABASE ================= */
+        const QUESTION_DATABASE = [
+            {
+                id: "ELEC001",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Electrical Fundamentals",
+                question: "What is the SI unit of electric current?",
+                questionHindi: "विद्युत धारा की SI इकाई क्या है?",
+                options: ["Volt", "Ampere", "Ohm", "Watt"],
+                optionsHindi: ["वोल्ट", "एम्पियर", "ओम", "वाट"],
+                correctAnswer: 1,
+                explanation: "The SI unit of electric current is the ampere.",
+                explanationHindi: "विद्युत धारा की SI इकाई एम्पियर है।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC002",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Electrical Fundamentals",
+                question: "Which instrument is used to measure electrical current?",
+                questionHindi: "विद्युत धारा मापने के लिए किस यंत्र का उपयोग किया जाता है?",
+                options: ["Voltmeter", "Ammeter", "Wattmeter", "Ohmmeter"],
+                optionsHindi: ["वोल्टमीटर", "एमीटर", "वाटमीटर", "ओममीटर"],
+                correctAnswer: 1,
+                explanation: "An ammeter is connected in series in a circuit to measure electric current.",
+                explanationHindi: "विद्युत धारा मापने के लिए एमीटर को परिपथ में श्रेणी क्रम में जोड़ा जाता है।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC003",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Ohm's Law",
+                question: "According to Ohm's Law, what is the formula for voltage (V)?",
+                questionHindi: "ओम के नियम के अनुसार, वोल्टेज (V) का सूत्र क्या है?",
+                options: ["V = I / R", "V = I × R", "V = R / I", "V = I² × R"],
+                optionsHindi: ["V = I / R", "V = I × R", "V = R / I", "V = I² × R"],
+                correctAnswer: 1,
+                explanation: "Ohm's Law states V = I × R (Voltage = Current × Resistance).",
+                explanationHindi: "ओम का नियम कहता है V = I × R (वोल्टेज = धारा × प्रतिरोध)।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC004",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Resistors",
+                question: "What is the unit of electrical resistance?",
+                questionHindi: "विद्युत प्रतिरोध की इकाई क्या है?",
+                options: ["Ampere", "Volt", "Ohm", "Siemens"],
+                optionsHindi: ["एम्पियर", "वोल्ट", "ओम", "सीमेंस"],
+                correctAnswer: 2,
+                explanation: "Resistance is measured in Ohms (Ω).",
+                explanationHindi: "प्रतिरोध को ओह्म (Ω) में मापा जाता है।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC005",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Safety & Tools",
+                question: "Which type of fire extinguisher is used for electrical fires?",
+                questionHindi: "विद्युत आग के लिए किस प्रकार के अग्निशामक का उपयोग किया जाता है?",
+                options: ["Water extinguisher", "Foam extinguisher", "Carbon Dioxide (CO2) extinguisher", "Soda acid extinguisher"],
+                optionsHindi: ["पानी वाला अग्निशामक", "फोम अग्निशामक", "कार्बन डाइऑक्साइड (CO2) अग्निशामक", "सोडा एसिड अग्निशामक"],
+                correctAnswer: 2,
+                explanation: "CO2 extinguishers are safe and effective for electrical fires as they do not conduct electricity.",
+                explanationHindi: "विद्युत आग के लिए CO2 अग्निशामक सुरक्षित और प्रभावी होते हैं क्योंकि ये बिजली का चालन नहीं करते हैं।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC006",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Cells and Batteries",
+                question: "What is the electrolyte used in a lead-acid storage battery?",
+                questionHindi: "लेड-एसिड स्टोरेज बैटरी में प्रयुक्त इलेक्ट्रोलाइट क्या है?",
+                options: ["Dilute Hydrochloric acid", "Dilute Sulphuric acid", "Nitric acid", "Sodium hydroxide"],
+                optionsHindi: ["तनु हाइड्रोक्लोरिक एसिड", "तनु सल्फ्यूरिक एसिड", "नाइट्रिक एसिड", "सोडियम हाइड्रोक्साइड"],
+                correctAnswer: 1,
+                explanation: "Dilute sulphuric acid (H2SO4) is used as electrolyte in lead-acid batteries.",
+                explanationHindi: "लेड-एसिड बैटरी में इलेक्ट्रोलाइट के रूप में तनु सल्फ्यूरिक एसिड (H2SO4) का उपयोग किया जाता है।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC007",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Magnetism",
+                question: "What is the unit of magnetic flux?",
+                questionHindi: "चुंबकीय फ्लक्स की इकाई क्या है?",
+                options: ["Tesla", "Weber", "Henry", "Ampere-turn"],
+                optionsHindi: ["टेस्ला", "वेबर", "हेनरी", "एम्पियर-टर्न"],
+                correctAnswer: 1,
+                explanation: "Magnetic flux is measured in Webers (Wb).",
+                explanationHindi: "चुंबकीय फ्लक्स को वेबर (Wb) में मापा जाता है।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC008",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "AC Circuits",
+                question: "In an AC circuit, what is the reciprocal of impedance?",
+                questionHindi: "AC परिपथ में, प्रतिबाधा (impedance) का व्युत्क्रम क्या है?",
+                options: ["Admittance", "Susceptance", "Conductance", "Reactance"],
+                optionsHindi: ["एडमिटेंस", "ससेप्टेंस", "कंडक्टेंस", "रिएक्टेंस"],
+                correctAnswer: 0,
+                explanation: "Admittance is the reciprocal of impedance in AC circuits.",
+                explanationHindi: "AC परिपथ में एडमिटेंस प्रतिबाधा का व्युत्क्रम होता है।",
+                difficulty: "Hard",
+                marks: 2
+            },
+            {
+                id: "ELEC009",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Measuring Instruments",
+                question: "Which damping force is commonly used in moving coil instruments?",
+                questionHindi: "मूविंग कॉइल उपकरणों में आमतौर पर किस डैम्पिंग बल का उपयोग किया जाता है?",
+                options: ["Fluid friction damping", "Eddy current damping", "Air friction damping", "Gravity control"],
+                optionsHindi: ["तरल घर्षण डैम्पिंग", "एड़ी करंट डैम्पिंग", "वायु घर्षण डैम्पिंग", "गुरुत्वाकर्षण नियंत्रण"],
+                correctAnswer: 1,
+                explanation: "Eddy current damping is most effective in moving coil instruments.",
+                explanationHindi: "मूविंग कॉइल उपकरणों में एड़ी करंट डैम्पिंग सबसे प्रभावी होती है।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC010",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                topic: "Wiring Systems",
+                question: "Which wiring system is suitable for temporary installations like exhibitions?",
+                questionHindi: "प्रदर्शनी जैसी अस्थायी स्थापनाओं के लिए कौन सी वायरिंग प्रणाली उपयुक्त है?",
+                options: ["Casing and capping wiring", "Lead sheathed wiring", "Cleat wiring", "Conduit wiring"],
+                optionsHindi: ["केसिंग और कैपिंग वायरिंग", "लेड शीथेड वायरिंग", "क्लीट वायरिंग", "कंडूइट वायरिंग"],
+                correctAnswer: 2,
+                explanation: "Cleat wiring is cheap and easily removable, making it ideal for temporary installations.",
+                explanationHindi: "क्लीट वायरिंग सस्ती और आसानी से हटाने योग्य होती है, जो इसे अस्थायी स्थापनाओं के लिए आदर्श बनाती है।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC011",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Workshop Calculation and Science",
+                topic: "Basic Mathematics",
+                question: "What is the square root of 529?",
+                questionHindi: "529 का वर्गमूल क्या है?",
+                options: ["21", "23", "25", "27"],
+                optionsHindi: ["21", "23", "25", "27"],
+                correctAnswer: 1,
+                explanation: "23 multiplied by 23 equals 529.",
+                explanationHindi: "23 को 23 से गुणा करने पर 529 प्राप्त होता है।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC012",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Workshop Calculation and Science",
+                topic: "Units & Fractions",
+                question: "Convert 0.056 decimal into percentage.",
+                questionHindi: "0.056 दशमलव को प्रतिशत में बदलें।",
+                options: ["0.56%", "5.6%", "56%", "0.056%"],
+                optionsHindi: ["0.56%", "5.6%", "56%", "0.056%"],
+                correctAnswer: 1,
+                explanation: "Multiply decimal by 100: 0.056 × 100 = 5.6%.",
+                explanationHindi: "दशमलव को 100 से गुणा करें: 0.056 × 100 = 5.6%。",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC013",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Engineering Drawing",
+                topic: "Lines and Letters",
+                question: "Which pencil grade is hardest?",
+                questionHindi: "कौन सा पेंसिल ग्रेड सबसे कठोर (hardest) है?",
+                options: ["HB", "2B", "9H", "2H"],
+                optionsHindi: ["HB", "2B", "9H", "2H"],
+                correctAnswer: 2,
+                explanation: "H grades indicate hardness, and 9H is the hardest pencil grade.",
+                explanationHindi: "H ग्रेड कठोरता को दर्शाता है, और 9H सबसे कठोर पेंसिल ग्रेड है।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC014",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Employability Skills",
+                topic: "Communication",
+                question: "Which of the following is an example of verbal communication?",
+                questionHindi: "निम्नलिखित में से कौन मौखिक संचार (verbal communication) का एक उदाहरण है?",
+                options: ["Facial expression", "Body posture", "Spoken words", "Written sign"],
+                optionsHindi: ["चेहरे के भाव", "शरीर की मुद्रा", "बोले गए शब्द", "लिखित संकेत"],
+                correctAnswer: 2,
+                explanation: "Spoken words constitute verbal communication.",
+                explanationHindi: "बोले गए शब्द मौखिक संचार बनाते हैं।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC015",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                topic: "AC Generators",
+                question: "What is the formula for synchronous speed (Ns) of an alternator?",
+                questionHindi: "अल्टरनेटर की तुल्यकालिक गति (Ns) का सूत्र क्या है?",
+                options: ["Ns = 120f / P", "Ns = 120P / f", "Ns = f / 120P", "Ns = P / 120f"],
+                optionsHindi: ["Ns = 120f / P", "Ns = 120P / f", "Ns = f / 120P", "Ns = P / 120f"],
+                correctAnswer: 0,
+                explanation: "Synchronous speed Ns = 120f / P where f is frequency and P is poles.",
+                explanationHindi: "तुल्यकालिक गति Ns = 120f / P जहाँ f आवृत्ति है और P पोल हैं।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC016",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                topic: "DC Motors",
+                question: "Which DC motor is best suited for constant speed drives?",
+                questionHindi: "स्थिर गति ड्राइव के लिए कौन सी DC मोटर सबसे उपयुक्त है?",
+                options: ["DC Series motor", "DC Shunt motor", "DC Cumulative compound motor", "DC Differential motor"],
+                optionsHindi: ["DC सीरीज मोटर", "DC शंट मोटर", "DC कम्युलेटिव कंपाउंड मोटर", "DC डिफरेंशियल मोटर"],
+                correctAnswer: 1,
+                explanation: "DC shunt motor has a nearly constant speed from no-load to full-load.",
+                explanationHindi: "DC शंट मोटर में नो-लोड से फुल-लोड तक लगभग स्थिर गति होती है।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC017",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                topic: "Transformers",
+                question: "What is the function of the breather in a power transformer?",
+                questionHindi: "पावर ट्रांसफार्मर में ब्रीदर का क्या कार्य है?",
+                options: ["To cool transformer oil", "To absorb moisture from incoming air", "To protect against short circuit", "To increase voltage"],
+                optionsHindi: ["ट्रांसफार्मर तेल को ठंडा करना", "आने वाली हवा से नमी सोखना", "शॉर्ट सर्किट से बचाना", "वोल्टेज बढ़ाना"],
+                correctAnswer: 1,
+                explanation: "The breather contains silica gel to absorb moisture when air enters the transformer.",
+                explanationHindi: "ब्रीदर में सिलिका जेल होता है जो ट्रांसफार्मर में हवा प्रवेश करने पर नमी को सोखता है।",
+                difficulty: "Medium",
+                marks: 2
+            },
+            {
+                id: "ELEC018",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                topic: "Three Phase Induction Motors",
+                question: "What is the slip of a 3-phase induction motor at standstill?",
+                questionHindi: "स्थिर अवस्था (standstill) में 3-फेज इंडक्शन मोटर का स्लिप क्या होता है?",
+                options: ["0", "0.5", "1", "Infinity"],
+                optionsHindi: ["0", "0.5", "1", "Infinity"],
+                correctAnswer: 2,
+                explanation: "At standstill, rotor speed is zero, so slip s = (Ns - 0)/Ns = 1.",
+                explanationHindi: "स्थिर अवस्था में, रोटर गति शून्य होती है, इसलिए स्लिप s = 1 होती है।",
+                difficulty: "Hard",
+                marks: 2
+            },
+            {
+                id: "ELEC019",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                topic: "Power Generation",
+                question: "Which non-conventional energy source uses photovoltaic cells?",
+                questionHindi: "कौन सा गैर-पारंपरिक ऊर्जा स्रोत फोटोवोल्टिक सेल का उपयोग करता है?",
+                options: ["Wind energy", "Solar energy", "Biomass energy", "Geothermal energy"],
+                optionsHindi: ["पवन ऊर्जा", "सौर ऊर्जा", "बायोमास ऊर्जा", "भू-तापीय ऊर्जा"],
+                correctAnswer: 1,
+                explanation: "Solar photovoltaic cells convert sunlight directly into electricity.",
+                explanationHindi: "सौर फोटोवोल्टिक सेल सीधे सूर्य के प्रकाश को बिजली में बदलते हैं।",
+                difficulty: "Easy",
+                marks: 2
+            },
+            {
+                id: "ELEC020",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                topic: "Domestic Appliances",
+                question: "Which heating element material is commonly used in electric irons?",
+                questionHindi: "इलेक्ट्रिक आयरन में आमतौर पर किस हीटिंग तत्व सामग्री का उपयोग किया जाता है?",
+                options: ["Copper", "Nichrome", "Aluminium", "Tungsten"],
+                optionsHindi: ["तांबा", "नाइक्रोम", "एल्युमिनियम", "टंगस्टन"],
+                correctAnswer: 1,
+                explanation: "Nichrome wire has high resistance and can withstand high temperatures without oxidation.",
+                explanationHindi: "नाइक्रोम तार का उच्च प्रतिरोध होता है और यह बिना ऑक्सीकरण के उच्च तापमान को सहन कर सकता है।",
+                difficulty: "Easy",
+                marks: 2
+            }
+        ];
 
-        function showToast(message) {
-            toastNotification.textContent = message;
-            toastNotification.classList.add('show');
-            setTimeout(() => {
-                toastNotification.classList.remove('show');
-            }, 2500);
-        }
+        /* ================= MOCK TEST SETS ================= */
+        const MOCK_TEST_SETS = [
+            {
+                id: "TEST-ELEC-Y1-T1",
+                title: "Electrician First Year - Trade Theory Mock Test 1",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                questionCount: 10,
+                durationMinutes: 15,
+                difficulty: "Easy",
+                questionIds: ["ELEC001", "ELEC002", "ELEC003", "ELEC004", "ELEC005", "ELEC006", "ELEC007", "ELEC008", "ELEC009", "ELEC010"]
+            },
+            {
+                id: "TEST-ELEC-Y1-SCI",
+                title: "Electrician First Year - Workshop Calculation & Science",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Workshop Calculation and Science",
+                questionCount: 4,
+                durationMinutes: 10,
+                difficulty: "Easy",
+                questionIds: ["ELEC011", "ELEC012", "ELEC013", "ELEC014"]
+            },
+            {
+                id: "TEST-ELEC-Y2-T1",
+                title: "Electrician Second Year - Advanced Trade Theory Test",
+                trade: "Electrician",
+                year: "Second Year",
+                subject: "Trade Theory",
+                questionCount: 6,
+                durationMinutes: 10,
+                difficulty: "Medium",
+                questionIds: ["ELEC015", "ELEC016", "ELEC017", "ELEC018", "ELEC019", "ELEC020"]
+            },
+            {
+                id: "TEST-ELEC-FULL-20",
+                title: "Electrician Complete CBT Full Mock Test (All Topics)",
+                trade: "Electrician",
+                year: "First Year",
+                subject: "Trade Theory",
+                questionCount: 20,
+                durationMinutes: 30,
+                difficulty: "Medium",
+                questionIds: QUESTION_DATABASE.map(q => q.id)
+            }
+        ];
 
-        function showError(message) {
-            errorText.textContent = message;
-            errorMsg.classList.add('visible');
-        }
+        /* ================= APPLICATION STATE ================= */
+        let state = {
+            currentView: 'home',
+            theme: localStorage.getItem('iti_theme') || 'light',
+            selectedTradeFilter: 'All',
+            selectedYearFilter: 'All',
+            selectedSubjectFilter: 'All',
+            activeTest: null,
+            activeLang: 'en', // 'en' or 'hi'
+            currentQuestionIndex: 0,
+            userAnswers: {}, // questionId -> selectedOptionIndex
+            questionStates: {}, // questionId -> 'not-visited' | 'not-answered' | 'answered' | 'marked'
+            timerInterval: null,
+            timeRemainingSeconds: 0,
+            lastResult: null,
+            history: JSON.parse(localStorage.getItem('iti_history') || '[]')
+        };
 
-        function hideError() {
-            errorMsg.classList.remove('visible');
-        }
-
-        function extractVideoId(url) {
-            if (!url) return null;
-            let videoId = null;
+        /* ================= INITIALIZATION ================= */
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(state.theme);
+            renderHomeTrades();
+            renderLatestTests();
+            renderAllTests();
             
-            // Standard / short / embed formats
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-
-            if (match && match[2].length === 11) {
-                videoId = match[2];
-            } else {
-                // Check if the input itself is just an 11-character video ID
-                const cleanInput = url.trim();
-                if (/^[a-zA-Z0-9_-]{11}$/.test(cleanInput)) {
-                    videoId = cleanInput;
+            // Handle browser back/forward navigation if hash exists
+            window.addEventListener('popstate', (e) => {
+                if (e.state && e.state.view) {
+                    router(e.state.view, false);
                 }
+            });
+        });
+
+        /* ================= ROUTING & VIEWS ================= */
+        function router(viewId, pushHistory = true) {
+            // Cleanup active timers if leaving exam view
+            if (state.currentView === 'exam' && viewId !== 'exam') {
+                clearInterval(state.timerInterval);
             }
-            return videoId;
+
+            state.currentView = viewId;
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) target.classList.add('active');
+
+            // Update nav active states
+            document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+            const activeNav = document.querySelector(`.nav-${viewId}`);
+            if (activeNav) activeNav.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pushHistory) {
+                history.pushState({ view: viewId }, '', `#${viewId}`);
+            }
+
+            if (viewId === 'progress') {
+                renderProgressPage();
+            }
         }
 
-        function getValidatedVideoId() {
-            const rawUrl = urlInput.value.trim();
-            if (!rawUrl) {
-                showError("Please enter a YouTube video URL.");
-                return null;
-            }
-            const videoId = extractVideoId(rawUrl);
-            if (!videoId) {
-                showError("Invalid YouTube link format. Please check and try again.");
-                return null;
-            }
-            hideError();
-            return videoId;
+        function scrollToTrades() {
+            const section = document.getElementById('trades-section');
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Paste action
-        pasteBtn.addEventListener('click', async () => {
-            try {
-                const text = await navigator.clipboard.readText();
-                if (text) {
-                    urlInput.value = text;
-                    hideError();
-                    showToast("URL pasted from clipboard");
+        /* ================= HOME RENDERERS ================= */
+        const POPULAR_TRADES = [
+            { name: "Electrician", icon: "⚡", desc: "Wiring, machines, motors & power" },
+            { name: "Fitter", icon: "⚙️", desc: "Fitting, assembly & metalwork" },
+            { name: "Welder", icon: "🔥", desc: "Arc, gas & TIG/MIG welding" },
+            { name: "COPA", icon: "💻", desc: "Computer operator & programming" },
+            { name: "Wireman", icon: "🔌", desc: "Domestic & industrial wiring" },
+            { name: "Mechanic Diesel", icon: "🚜", desc: "Diesel engines & maintenance" },
+            { name: "Electronics Mechanic", icon: "📡", desc: "Semiconductors & circuits" },
+            { name: "Turner", icon: "🛠️", desc: "Lathe machine operations" }
+        ];
+
+        function renderHomeTrades() {
+            const grid = document.getElementById('popularTradesGrid');
+            if (!grid) return;
+            grid.innerHTML = POPULAR_TRADES.map(t => `
+                <div class="trade-card">
+                    <div>
+                        <div class="trade-card-top">
+                            <div class="trade-badge">${t.icon}</div>
+                            <div class="trade-info">
+                                <h3>${t.name}</h3>
+                                <p>${t.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="trade-card-actions">
+                        <button class="btn btn-outline" onclick="selectTradeAndNavigate('${t.name}', 'First Year')">1st Year</button>
+                        <button class="btn btn-outline" onclick="selectTradeAndNavigate('${t.name}', 'Second Year')">2nd Year</button>
+                        <button class="btn btn-primary btn-full" onclick="selectTradeAndNavigate('${t.name}', 'All')">Explore Tests</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLatestTests() {
+            const grid = document.getElementById('latestTestsGrid');
+            if (!grid) return;
+            grid.innerHTML = MOCK_TEST_SETS.slice(0, 3).map(test => `
+                <div class="test-card">
+                    <div>
+                        <div class="test-meta">
+                            <span class="badge badge-primary">${test.trade}</span>
+                            <span class="badge badge-success">${test.year}</span>
+                            <span class="badge badge-warning">${test.difficulty}</span>
+                        </div>
+                        <h3>${test.title}</h3>
+                        <ul class="test-info-list">
+                            <li>❓ Questions: ${test.questionCount}</li>
+                            <li>⏱️ Duration: ${test.durationMinutes} Mins</li>
+                            <li>🎯 Subject: ${test.subject}</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="openInstructions('${test.id}')">Start Test</button>
+                </div>
+            `).join('');
+        }
+
+        function selectTradeAndNavigate(tradeName, yearName) {
+            state.selectedTradeFilter = tradeName;
+            state.selectedYearFilter = yearName;
+            state.selectedSubjectFilter = 'All';
+            document.getElementById('filterTrade').value = tradeName;
+            document.getElementById('filterYear').value = yearName;
+            document.getElementById('filterSubject').value = 'All';
+            router('tests');
+            applyTestFilters();
+        }
+
+        function filterBySubject(subjectName) {
+            state.selectedTradeFilter = 'All';
+            state.selectedYearFilter = 'All';
+            state.selectedSubjectFilter = subjectName;
+            document.getElementById('filterTrade').value = 'All';
+            document.getElementById('filterYear').value = 'All';
+            document.getElementById('filterSubject').value = subjectName;
+            router('tests');
+            applyTestFilters();
+        }
+
+        /* ================= MOCK TESTS SELECTION & FILTERS ================= */
+        function renderAllTests(filteredList = MOCK_TEST_SETS) {
+            const grid = document.getElementById('allTestsGrid');
+            if (!grid) return;
+            if (filteredList.length === 0) {
+                grid.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 3rem; color: var(--text-muted);"><h3>No mock tests found matching your filters.</h3><p>Try resetting filters to view available tests.</p></div>`;
+                return;
+            }
+            grid.innerHTML = filteredList.map(test => `
+                <div class="test-card">
+                    <div>
+                        <div class="test-meta">
+                            <span class="badge badge-primary">${test.trade}</span>
+                            <span class="badge badge-success">${test.year}</span>
+                            <span class="badge badge-warning">${test.difficulty}</span>
+                        </div>
+                        <h3>${test.title}</h3>
+                        <ul class="test-info-list">
+                            <li>❓ Questions: ${test.questionCount}</li>
+                            <li>⏱️ Duration: ${test.durationMinutes} Mins</li>
+                            <li>📚 Subject: ${test.subject}</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="openInstructions('${test.id}')">Start Test</button>
+                </div>
+            `).join('');
+        }
+
+        function applyTestFilters() {
+            const trade = document.getElementById('filterTrade').value;
+            const year = document.getElementById('filterYear').value;
+            const subject = document.getElementById('filterSubject').value;
+
+            state.selectedTradeFilter = trade;
+            state.selectedYearFilter = year;
+            state.selectedSubjectFilter = subject;
+
+            const filtered = MOCK_TEST_SETS.filter(t => {
+                const matchTrade = (trade === 'All' || t.trade === trade);
+                const matchYear = (year === 'All' || t.year === year);
+                const matchSubject = (subject === 'All' || t.subject === subject);
+                return matchTrade && matchYear && matchSubject;
+            });
+
+            renderAllTests(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterTrade').value = 'All';
+            document.getElementById('filterYear').value = 'All';
+            document.getElementById('filterSubject').value = 'All';
+            renderAllTests(MOCK_TEST_SETS);
+            showToast("Filters reset successfully");
+        }
+
+        /* ================= TEST INSTRUCTIONS SCREEN ================= */
+        function openInstructions(testId) {
+            const test = MOCK_TEST_SETS.find(t => t.id === testId);
+            if (!test) return;
+            state.activeTest = test;
+
+            const container = document.getElementById('instructionsCardContent');
+            container.innerHTML = `
+                <h2>${test.title}</h2>
+                <div class="instruction-meta-grid">
+                    <div class="instruction-meta-item">
+                        <span>Total Questions</span>
+                        <strong>${test.questionCount} Qs</strong>
+                    </div>
+                    <div class="instruction-meta-item">
+                        <span>Duration</span>
+                        <strong>${test.durationMinutes} Minutes</strong>
+                    </div>
+                    <div class="instruction-meta-item">
+                        <span>Marks Per Question</span>
+                        <strong>2 Marks</strong>
+                    </div>
+                    <div class="instruction-meta-item">
+                        <span>Negative Marking</span>
+                        <strong>None (0)</strong>
+                    </div>
+                </div>
+
+                <h4 style="color: var(--text-heading); margin-bottom: 0.75rem;">General Instructions:</h4>
+                <ul class="instructions-list">
+                    <li>The clock will be set at the server. The countdown timer in the top-right corner of test screen will display the remaining time available for you to complete the exam.</li>
+                    <li>When the timer reaches zero, the examination will end automatically and your responses will be submitted.</li>
+                    <li>You can navigate between questions using the Question Palette on the right or the Next/Previous buttons.</li>
+                    <li>You can mark questions for review to revisit them before final submission.</li>
+                    <li>Ensure you click 'Submit Test' upon completion and confirm your submission.</li>
+                </ul>
+
+                <label class="checkbox-container">
+                    <input type="checkbox" id="agreeInstructions" checked> I have read and understood all instructions. All computer hardware allotted to me is in proper working condition.
+                </label>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-outline" onclick="router('tests')">Back to Tests</button>
+                    <button class="btn btn-primary" onclick="startExam()">Start Test Now</button>
+                </div>
+            `;
+            router('instructions', true);
+        }
+
+        /* ================= CBT EXAM INTERFACE ================= */
+        function startExam() {
+            const agree = document.getElementById('agreeInstructions');
+            if (agree && !agree.checked) {
+                showToast("Please agree to the instructions before starting.");
+                return;
+            }
+
+            // Initialize test session
+            state.currentQuestionIndex = 0;
+            state.userAnswers = {};
+            state.questionStates = {};
+            state.activeLang = 'en';
+
+            // Populate questions for this test set
+            const testQIds = state.activeTest.questionIds;
+            state.examQuestions = testQIds.map(id => QUESTION_DATABASE.find(q => q.id === id)).filter(Boolean);
+
+            if (state.examQuestions.length === 0) {
+                showToast("Error: No questions found for this test set.");
+                return;
+            }
+
+            // Mark first question as not-answered or visited
+            state.questionStates[state.examQuestions[0].id] = 'not-answered';
+
+            // Set timer
+            state.timeRemainingSeconds = state.activeTest.durationMinutes * 60;
+            
+            router('exam', true);
+            renderExamQuestion();
+            renderQuestionPalette();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            updateTimerDisplay();
+            state.timerInterval = setInterval(() => {
+                state.timeRemainingSeconds--;
+                updateTimerDisplay();
+                if (state.timeRemainingSeconds <= 0) {
+                    clearInterval(state.timerInterval);
+                    autoSubmitTest();
                 }
-            } catch (err) {
-                showError("Clipboard permission denied or unavailable.");
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hrs = String(Math.floor(state.timeRemainingSeconds / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((state.timeRemainingSeconds % 3600) / 60)).padStart(2, '0');
+            const secs = String(state.timeRemainingSeconds % 60).padStart(2, '0');
+            const el = document.getElementById('examTimerDisplay');
+            if (el) el.textContent = `${hrs}:${mins}:${secs}`;
+        }
+
+        function switchExamLang(lang) {
+            state.activeLang = lang;
+            document.getElementById('langBtnEn').classList.toggle('active', lang === 'en');
+            document.getElementById('langBtnHi').classList.toggle('active', lang === 'hi');
+            renderExamQuestion();
+        }
+
+        function renderExamQuestion() {
+            const q = state.examQuestions[state.currentQuestionIndex];
+            const qNum = state.currentQuestionIndex + 1;
+            const total = state.examQuestions.length;
+
+            document.getElementById('examQuestionCounter').textContent = `Question ${qNum} of ${total}`;
+
+            const qText = (state.activeLang === 'hi' && q.questionHindi) ? q.questionHindi : q.question;
+            document.getElementById('examQuestionText').textContent = `${qNum}. ${qText}`;
+
+            const options = (state.activeLang === 'hi' && q.optionsHindi) ? q.optionsHindi : q.options;
+            const currentSelected = state.userAnswers[q.id];
+
+            const listEl = document.getElementById('examOptionsList');
+            listEl.innerHTML = options.map((opt, idx) => `
+                <div class="exam-option-item" onclick="selectOption(${idx})">
+                    <input type="radio" name="examOpt" id="opt_${idx}" ${currentSelected === idx ? 'checked' : ''}>
+                    <label for="opt_${idx}">${String.fromCharCode(65 + idx)}. ${opt}</label>
+                </div>
+            `).join('');
+
+            // Update current visited state if not answered or marked
+            if (!state.questionStates[q.id] || state.questionStates[q.id] === 'not-visited') {
+                state.questionStates[q.id] = 'not-answered';
             }
-        });
+            renderQuestionPalette();
+        }
 
-        // Clear action
-        clearBtn.addEventListener('click', () => {
-            urlInput.value = '';
-            hideError();
-            playerWrapper.classList.remove('active');
-            playerContainer.innerHTML = '';
-        });
+        function selectOption(optIndex) {
+            const q = state.examQuestions[state.currentQuestionIndex];
+            state.userAnswers[q.id] = optIndex;
+            if (state.questionStates[q.id] !== 'marked') {
+                state.questionStates[q.id] = 'answered';
+            }
+            renderQuestionPalette();
+            // Update radio button UI
+            document.querySelectorAll('input[name="examOpt"]').forEach((radio, idx) => {
+                radio.checked = (idx === optIndex);
+            });
+        }
 
-        // Play Embedded action
-        playEmbedBtn.addEventListener('click', () => {
-            const videoId = getValidatedVideoId();
-            if (!videoId) return;
-
-            playerWrapper.classList.add('active');
-            playerContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            showToast("Loading embedded player");
-        });
-
-        // Open External action
-        openExternalBtn.addEventListener('click', () => {
-            const videoId = getValidatedVideoId();
-            if (!videoId) return;
-
-            const standardUrl = `https://www.youtube.com/watch?v=${videoId}`;
-            const appUrl = `vnd.youtube://${videoId}`;
-
-            // Check if mobile or general external support
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const isAndroid = /Android/.test(navigator.userAgent);
-
-            if (isAndroid || isIOS) {
-                // Attempt launching mobile scheme fallback to web
-                window.location.href = appUrl;
-                setTimeout(() => {
-                    window.open(standardUrl, '_blank');
-                }, 500);
+        function saveAndNext() {
+            if (state.currentQuestionIndex < state.examQuestions.length - 1) {
+                state.currentQuestionIndex++;
+                renderExamQuestion();
             } else {
-                window.open(standardUrl, '_blank');
+                showToast("This is the last question.");
             }
-            showToast("Opening external player / app");
-        });
+        }
 
-        // Copy URL action
-        copyUrlBtn.addEventListener('click', async () => {
-            const videoId = getValidatedVideoId();
-            if (!videoId) return;
-
-            const cleanUrl = `https://www.youtube.com/watch?v=${videoId}`;
-            try {
-                await navigator.clipboard.writeText(cleanUrl);
-                showToast("Video URL copied to clipboard!");
-            } catch (err) {
-                showError("Failed to copy URL.");
+        function prevQuestion() {
+            if (state.currentQuestionIndex > 0) {
+                state.currentQuestionIndex--;
+                renderExamQuestion();
+            } else {
+                showToast("This is the first question.");
             }
-        });
+        }
 
-        // Live validation clearing on input
-        urlInput.addEventListener('input', () => {
-            if (errorMsg.classList.contains('visible')) {
-                hideError();
+        function clearResponse() {
+            const q = state.examQuestions[state.currentQuestionIndex];
+            delete state.userAnswers[q.id];
+            if (state.questionStates[q.id] !== 'marked') {
+                state.questionStates[q.id] = 'not-answered';
             }
-        });
+            renderExamQuestion();
+            showToast("Response cleared");
+        }
+
+        function markForReview() {
+            const q = state.examQuestions[state.currentQuestionIndex];
+            state.questionStates[q.id] = 'marked';
+            renderQuestionPalette();
+            showToast("Marked for review");
+            saveAndNext();
+        }
+
+        function goToQuestion(index) {
+            state.currentQuestionIndex = index;
+            renderExamQuestion();
+        }
+
+        function renderQuestionPalette() {
+            const grid = document.getElementById('questionPaletteGrid');
+            if (!grid) return;
+            grid.innerHTML = state.examQuestions.map((q, idx) => {
+                const st = state.questionStates[q.id] || 'not-visited';
+                let stClass = 'not-visited';
+                if (st === 'not-answered') stClass = 'not-answered';
+                if (st === 'answered') stClass = 'answered';
+                if (st === 'marked') stClass = 'marked';
+                const isCurrent = (idx === state.currentQuestionIndex) ? 'current' : '';
+
+                return `
+                    <button class="palette-btn ${stClass} ${isCurrent}" onclick="goToQuestion(${idx})">${idx + 1}</button>
+                `;
+            }).join('');
+        }
+
+        /* ================= SUBMISSION & RESULT CALCULATION ================= */
+        function confirmSubmitTest() {
+            openModal(
+                "Submit Test",
+                "Are you sure you want to submit your test? You will not be able to change answers after submission.",
+                () => {
+                    clearInterval(state.timerInterval);
+                    calculateAndShowResult();
+                }
+            );
+        }
+
+        function autoSubmitTest() {
+            showToast("Time expired! Submitting test automatically.");
+            calculateAndShowResult();
+        }
+
+        function calculateAndShowResult() {
+            const questions = state.examQuestions;
+            let totalQuestions = questions.length;
+            let attempted = 0;
+            let correct = 0;
+            let incorrect = 0;
+            let unanswered = 0;
+            let totalMarks = totalQuestions * 2;
+            let marksObtained = 0;
+
+            questions.forEach(q => {
+                const userAns = state.userAnswers[q.id];
+                if (userAns !== undefined) {
+                    attempted++;
+                    if (userAns === q.correctAnswer) {
+                        correct++;
+                        marksObtained += 2;
+                    } else {
+                        incorrect++;
+                    }
+                } else {
+                    unanswered++;
+                }
+            });
+
+            const percentage = Math.round((marksObtained / totalMarks) * 100);
+            const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+            const timeTakenSecs = (state.activeTest.durationMinutes * 60) - state.timeRemainingSeconds;
+            const timeTakenMinsStr = `${Math.floor(timeTakenSecs / 60)}m ${timeTakenSecs % 60}s`;
+
+            // Performance message badge
+            let msg = "Keep Practicing";
+            let badgeClass = "badge-warning";
+            if (percentage >= 90) {
+                msg = "Excellent Performance! 🌟";
+                badgeClass = "badge-success";
+            } else if (percentage >= 70) {
+                msg = "Good Work! 👍";
+                badgeClass = "badge-primary";
+            } else if (percentage >= 40) {
+                msg = "Keep Practicing! 📚";
+                badgeClass = "badge-warning";
+            } else {
+                msg = "Review the Topics and Try Again ⚠️";
+                badgeClass = "badge-danger";
+            }
+
+            state.lastResult = {
+                testTitle: state.activeTest.title,
+                date: new Date().toLocaleDateString(),
+                totalQuestions,
+                attempted,
+                correct,
+                incorrect,
+                unanswered,
+                totalMarks,
+                marksObtained,
+                percentage,
+                accuracy,
+                timeTaken: timeTakenMinsStr,
+                msg,
+                badgeClass,
+                questions,
+                userAnswers: { ...state.userAnswers }
+            };
+
+            // Save to LocalStorage History
+            state.history.unshift(state.lastResult);
+            if (state.history.length > 20) state.history.pop();
+            localStorage.setItem('iti_history', JSON.stringify(state.history));
+
+            renderResultPage();
+            router('result', true);
+        }
+
+        function renderResultPage() {
+            const res = state.lastResult;
+            if (!res) return;
+
+            const container = document.getElementById('resultContainerContent');
+            container.innerHTML = `
+                <div class="result-header">
+                    <h2>Test Result & Scorecard</h2>
+                    <p style="color: var(--text-muted);">${res.testTitle}</p>
+                    <div class="result-message-badge ${res.badgeClass}">${res.msg}</div>
+                </div>
+
+                <div class="score-cards-grid">
+                    <div class="score-card">
+                        <span>Percentage Score</span>
+                        <h3>${res.percentage}%</h3>
+                    </div>
+                    <div class="score-card">
+                        <span>Marks Obtained</span>
+                        <h3>${res.marksObtained} / ${res.totalMarks}</h3>
+                    </div>
+                    <div class="score-card">
+                        <span>Accuracy</span>
+                        <h3>${res.accuracy}%</h3>
+                    </div>
+                    <div class="score-card">
+                        <span>Time Taken</span>
+                        <h3>${res.timeTaken}</h3>
+                    </div>
+                </div>
+
+                <div class="result-details-grid">
+                    <div>
+                        <div class="detail-row"><span>Total Questions</span><span>${res.totalQuestions}</span></div>
+                        <div class="detail-row"><span>Questions Attempted</span><span>${res.attempted}</span></div>
+                        <div class="detail-row"><span>Correct Answers</span><span style="color: var(--green);">${res.correct}</span></div>
+                    </div>
+                    <div>
+                        <div class="detail-row"><span>Incorrect Answers</span><span style="color: var(--red);">${res.incorrect}</span></div>
+                        <div class="detail-row"><span>Unanswered</span><span style="color: var(--orange);">${res.unanswered}</span></div>
+                        <div class="detail-row"><span>Date Attempted</span><span>${res.date}</span></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+                    <button class="btn btn-primary" onclick="toggleAnswerReview()">Review All Answers</button>
+                    <button class="btn btn-outline" onclick="openInstructions('${state.activeTest.id}')">Retry Test</button>
+                    <button class="btn btn-outline" onclick="router('home')">Back to Home</button>
+                    <button class="btn btn-outline" onclick="router('tests')">Choose Another Test</button>
+                </div>
+
+                <div id="answerReviewSection" style="display: none;">
+                    <h3 style="color: var(--text-heading); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 2rem;">Detailed Answer Review</h3>
+                    <div class="review-list">
+                        ${res.questions.map((q, idx) => {
+                            const userAns = res.userAnswers[q.id];
+                            const isCorrect = userAns === q.correctAnswer;
+                            const isUnanswered = userAns === undefined;
+                            const statusClass = isUnanswered ? 'unanswered' : (isCorrect ? 'correct' : 'incorrect');
+
+                            return `
+                                <div class="review-item ${statusClass}">
+                                    <div class="review-q-title">Q${idx + 1}. ${q.question}</div>
+                                    <div class="review-options">
+                                        ${q.options.map((opt, oIdx) => {
+                                            let optClass = '';
+                                            if (oIdx === q.correctAnswer) optClass = 'is-correct';
+                                            else if (oIdx === userAns && !isCorrect) optClass = 'is-incorrect';
+                                            return `<div class="review-option ${optClass}">${String.fromCharCode(65 + oIdx)}. ${opt} ${oIdx === q.correctAnswer ? ' ✓ (Correct)' : ''} ${oIdx === userAns && !isCorrect ? ' ✗ (Your Answer)' : ''}</div>`;
+                                        }).join('')}
+                                    </div>
+                                    <div class="explanation-box">
+                                        <strong>Explanation:</strong>
+                                        ${q.explanation}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleAnswerReview() {
+            const revSec = document.getElementById('answerReviewSection');
+            if (revSec) {
+                const isHidden = revSec.style.display === 'none';
+                revSec.style.display = isHidden ? 'block' : 'none';
+                if (isHidden) revSec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        /* ================= PROGRESS & HISTORY PAGE ================= */
+        function renderProgressPage() {
+            const history = state.history;
+            const summaryGrid = document.getElementById('progressSummaryGrid');
+            const historyGrid = document.getElementById('progressHistoryGrid');
+
+            const totalAttempts = history.length;
+            const avgScore = totalAttempts > 0 ? Math.round(history.reduce((acc, cur) => acc + cur.percentage, 0) / totalAttempts) : 0;
+            const bestScore = totalAttempts > 0 ? Math.max(...history.map(h => h.percentage)) : 0;
+
+            summaryGrid.innerHTML = `
+                <div class="score-card">
+                    <span>Tests Attempted</span>
+                    <h3>${totalAttempts}</h3>
+                </div>
+                <div class="score-card">
+                    <span>Average Score</span>
+                    <h3>${avgScore}%</h3>
+                </div>
+                <div class="score-card">
+                    <span>Best Score</span>
+                    <h3>${bestScore}%</h3>
+                </div>
+                <div class="score-card">
+                    <span>Storage Status</span>
+                    <h3>Local Browser</h3>
+                </div>
+            `;
+
+            if (totalAttempts === 0) {
+                historyGrid.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 3rem; color: var(--text-muted);"><h3>No test history available.</h3><p>Complete mock tests to view your history and performance tracking here.</p></div>`;
+                return;
+            }
+
+            historyGrid.innerHTML = history.map(h => `
+                <div class="test-card">
+                    <div>
+                        <div class="test-meta">
+                            <span class="badge badge-primary">Score: ${h.percentage}%</span>
+                            <span class="badge badge-success">${h.date}</span>
+                        </div>
+                        <h3>${h.testTitle}</h3>
+                        <ul class="test-info-list">
+                            <li>✅ Correct: ${h.correct} / ${h.totalQuestions}</li>
+                            <li>🎯 Marks: ${h.marksObtained} / ${h.totalMarks}</li>
+                            <li>⏱️ Time Taken: ${h.timeTaken}</li>
+                        </ul>
+                    </div>
+                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); margin-top: 0.5rem;">${h.msg}</div>
+                </div>
+            `).join('');
+        }
+
+        /* ================= THEME & UI HELPERS ================= */
+        function toggleTheme() {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            applyTheme(state.theme);
+            localStorage.setItem('iti_theme', state.theme);
+        }
+
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+        }
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('navLinks');
+            if (nav) nav.classList.toggle('open');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Modal Actions
+        let modalCallback = null;
+        function openModal(title, desc, callback) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDesc').textContent = desc;
+            modalCallback = callback;
+            document.getElementById('confirmModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('open');
+            modalCallback = null;
+        }
+
+        function executeModalAction() {
+            if (modalCallback) modalCallback();
+            closeModal();
+        }
     </script>
 </body>
 </html>
